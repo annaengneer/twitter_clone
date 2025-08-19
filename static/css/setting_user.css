@@ -1,0 +1,83 @@
+body {
+    background-color: #ffffff;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    color: #0f1419;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.signup-page {
+    background-color: #ffffff;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    color: #0f1419;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.signup-container {
+    width: 100%;
+    max-width: 420px;
+    padding: 32px;
+    border: 1px solid #e1e8ed;
+    border-radius: 16px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    background-color: #ffffff;
+}
+
+.signup-container h1 {
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 24px;
+    text-align: center;
+}
+
+.signup-container input[type="text"],
+.signup-container input[type="email"],
+.signup-container input[type="password"],
+.signup-container input[type="date"] {
+    width: 100%;
+    padding: 14px;
+    margin: 10px 0;
+    border: 1px solid #ccd6dd;
+    border-radius: 30px;
+    font-size: 16px;
+    outline: none;
+    transition: border 0.2s;
+}
+
+.signup-container input:focus {
+    border-color: #1d9bf0;
+    box-shadow: 0 0 0 2px rgba(29, 155, 240, 0.2);
+}
+
+.signup-container button {
+    width: 100%;
+    padding: 14px;
+    margin-top: 20px;
+    border: none;
+    border-radius: 30px;
+    background-color: #1d9bf0;
+    color: #ffffff;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.signup-container button:hover
+.signup-container[type="submit"]:hover {
+    background-color: #1a8cd8;
+}
+
+.signup-container p {
+    text-align: center;
+    margin-top: 16px;
+    font-size: 14px;
+    color: #536471;
+}
+.signup-container ul.errorlist {
+    color: #f4212e; margin: 8px 0;
+}
