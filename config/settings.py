@@ -27,7 +27,8 @@ SECRET_KEY = env("SECRET_KEY", default=os.environ.get("SECRET_KEY", "dev-insecur
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env("DEBUG", default=False)
 
-ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=["localhost", "127.0.0.1", "0.0.0.0","web", "still-reaches-06925.herokuapp.com", "https://still-reaches-06925-c85c2689c92d.herokuapp.com"])
+ALLOWED_HOSTS=env.list("ALLOWED_HOSTS",default=["localhost", "127.0.0.1"])
+
 
 CSRF_TRUSTED_ORIGINS = env.list("CSRF_TRUSTED_ORIGINS", default=[
     "https://still-reaches-06925.herokuapp.com","https://still-reaches-06925-c85c2689c92d.herokuapp.com"
