@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
+    'allauth.socialaccount.providers.github',
     
     'twitter_app',
     'rest_framework',
@@ -155,6 +156,11 @@ STATICFILES_DIRS = [BASE_DIR / "static"]
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+ACCOUNT_AUTHENTICATION_METHOD = 'email'
+ACCOUNT_USERNAME_REQUIRED = False
+
+SITE_ID = 1
+
 LOGIN_URL = '/accounts/login'
 LOGIN_REDIRECT_URL = "/"
 ACCOUNT_LOGOUT_ON_GET = True
@@ -175,3 +181,12 @@ EMAIL_PORT = int(os.getenv('EMAIL_PORT',587))
 EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS', False)
 EMAIL_BACKEND = env("EMAIL_BACKEND", default="django.core.mail.backends.console.EmailBackend")
 DEFAULT_FROM_EMAIL = env("DEFAULT_FROM_EMAIL", default="webmastar@localhost")
+
+SOCIALACCOUNT_PROVIDERS = {
+    "githab": {
+        "APP": {
+            "client_id": env("GITHUB_OAUTH_CLIENT_ID"),
+            "secret": env("GITHUB_OAUTH_SECRET"),
+        }
+    }
+}

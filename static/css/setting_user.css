@@ -28,7 +28,8 @@ body {
     background-color: #ffffff;
 }
 
-.signup-container h1 {
+.signup-container h1,
+.signup-container h2{
     font-size: 28px;
     font-weight: 700;
     margin-bottom: 24px;
@@ -78,6 +79,10 @@ body {
     font-size: 14px;
     color: #536471;
 }
+.signup-container ul {
+    list-style: none;
+}
+
 .signup-container ul.errorlist {
     color: #f4212e; margin: 8px 0;
 }
