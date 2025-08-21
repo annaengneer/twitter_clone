@@ -32,9 +32,11 @@
                 {% endelement %}
                 {{ redirect_field }}
             {% endslot %}
+            {% slot actions %}
                 {% element button type="submit" tags="prominent,login" %}
                     {% trans "Sign In" %}
                 {% endelement %}
+            {% endslot %}   
         {% endelement %}
     {% endif %}
     {% if LOGIN_BY_CODE_ENABLED or PASSKEY_LOGIN_ENABLED %}
