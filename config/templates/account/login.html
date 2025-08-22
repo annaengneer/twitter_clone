@@ -59,7 +59,8 @@
     {% endif %}
     {% if SOCIALACCOUNT_ENABLED %}
         {% include "socialaccount/snippets/login.html" with page_layout="entrance" %}
-    {% endif %}
+    {% endif %} 
+    
 {% endblock content %}
 {% block extra_body %}
     {{ block.super }}
