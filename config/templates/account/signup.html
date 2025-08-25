@@ -38,8 +38,6 @@
             {% endslot %}
         {% endelement %}
     {% endif %}
-    </div>
-</div>
     {% if PASSKEY_SIGNUP_ENABLED %}
         {% element hr %}
         {% endelement %}
@@ -50,4 +48,6 @@
     {% if SOCIALACCOUNT_ENABLED %}
         {% include "socialaccount/snippets/login.html" with page_layout="entrance" %}
     {% endif %}
+    </div>
+</div>
 {% endblock content %}

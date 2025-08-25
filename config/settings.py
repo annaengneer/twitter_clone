@@ -25,7 +25,7 @@ environ.Env.read_env(env_file=str(BASE_DIR) + "/.env")
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = env("SECRET_KEY", default=os.environ.get("SECRET_KEY", "dev-insecure-key"))
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = env("DEBUG", default=False)
+DEBUG = env.bool("DEBUG", default=False)
 
 ALLOWED_HOSTS=env.list("ALLOWED_HOSTS",default=["localhost", "127.0.0.1"])
 
@@ -33,10 +33,10 @@ ALLOWED_HOSTS=env.list("ALLOWED_HOSTS",default=["localhost", "127.0.0.1"])
 CSRF_TRUSTED_ORIGINS = env.list("CSRF_TRUSTED_ORIGINS", default=[
     "https://still-reaches-06925.herokuapp.com","https://still-reaches-06925-c85c2689c92d.herokuapp.com"
 ])
-
+ACCOUNT_DEFALT_HTTP_PROTOCOL = os.environ.get("DEFAULT_HTTP_PROTOCOL", "http")
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 USE_X_FORWARDED_HOST = True
-
+SITE_ID=int(os.environ.get("SITE_ID", "1"))
 AUTH_USER_MODEL = 'twitter_app.User'
 
 # Application definition
@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
+    'allauth.socialaccount.providers.github',
     
     'twitter_app',
     'rest_framework',
@@ -64,7 +65,7 @@ AUTHENTICATION_BACKENDS = (
     "allauth.account.auth_backends.AuthenticationBackend",
 )
 
-SITE_ID = 1
+
 
 
 MIDDLEWARE = [
@@ -161,9 +162,9 @@ ACCOUNT_LOGOUT_ON_GET = True
 ACCOUNT_LOGOUT_REDIRECT_URL ='/accounts/signup/'
 
 ACCOUNT_LOGIN_METHODS = {"username", "email"}
+ACCOUNT_USERNAME_REQUIRED=True
 
 ACCOUNT_SIGNUP_FORM_CLASS = "twitter_app.forms.SignUpForm"
-ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_SIGNUP_FIELDS = ["username*", "email*", "password1*", "password2*"]
 
 ACCOUNT_EMAIL_VERIFICATION = "optional"
@@ -172,6 +173,15 @@ EMAIL_HOST = os.getenv('EMAIL_HOST', '')
 EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER', '')
 EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD', '')
 EMAIL_PORT = int(os.getenv('EMAIL_PORT',587))
-EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS', False)
+EMAIL_USE_TLS = env.bool('EMAIL_USE_TLS', False)
 EMAIL_BACKEND = env("EMAIL_BACKEND", default="django.core.mail.backends.console.EmailBackend")
 DEFAULT_FROM_EMAIL = env("DEFAULT_FROM_EMAIL", default="webmastar@localhost")
+
+SOCIALACCOUNT_PROVIDERS = {
+    "github": {
+        "APP": {
+            "client_id": env("GITHUB_OAUTH_CLIENT_ID"),
+            "secret": env("GITHUB_OAUTH_SECRET"),
+        }
+    }
+}

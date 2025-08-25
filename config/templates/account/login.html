@@ -36,10 +36,8 @@
                 {% element button type="submit" tags="prominent,login" %}
                     {% trans "Sign In" %}
                 {% endelement %}
-            {% endslot %}
-        {% endelement %}      
-    </div>
-</div>
+            {% endslot %}   
+        {% endelement %}
     {% endif %}
     {% if LOGIN_BY_CODE_ENABLED or PASSKEY_LOGIN_ENABLED %}
         {% element hr %}
@@ -55,11 +53,14 @@
                     {% trans "Send me a sign-in code" %}
                 {% endelement %}
             {% endif %}
+    </div>
+</div>
         {% endelement %}
     {% endif %}
     {% if SOCIALACCOUNT_ENABLED %}
         {% include "socialaccount/snippets/login.html" with page_layout="entrance" %}
-    {% endif %}
+    {% endif %} 
+    
 {% endblock content %}
 {% block extra_body %}
     {{ block.super }}
