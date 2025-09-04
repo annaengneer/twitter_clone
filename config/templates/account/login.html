@@ -65,6 +65,6 @@
 {% block extra_body %}
     {{ block.super }}
     {% if PASSKEY_LOGIN_ENABLED %}
-        {% include "mfa/webauthn/snippets/login_script.html" with button_id="passkey_login" %}
+        {% include "mfa/webauth/snippets/login_script.html" with button_id="passkey_login" %}
     {% endif %}
 {% endblock %}

@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+
+{% block extra_head %}
+  <link rel="stylesheet" href="{% static 'css/top_page.css' %}" />
+{% endblock extra_head %}
+
+{% block title %}
+  {% if user.is_authenticated %}
+    MyPage
+  {% else %}
+    Main
+  {% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="app">
+  <header>
+    <h1 class="title"><i class="bi bi-twitter-x"></i></h1>
+    <nav class="nav">
+      {% if user.is_authenticated %}
+        <form method="post" action="{% url 'account_logout' %}" style="display: inline;">
+          {% csrf_token %}
+          <input type="hidden" name="next" value="{% url 'account_login' %}" />
+          <button type="submit" class="btn btn-outline-secondary btn-sm">ログアウト</button>
+        </form>
+      {% endif %}
+    </nav>
+  </header>
+
+  <div class="main">
+    <div class="sidebar">
+      <ul>
+        <li><a class="item" href="#"><i class="bi bi-house-heart"></i>　ホーム</a></li>
+        <li><a class="item" href="#"><i class="bi bi-hash"></i>　話題を検索</a></li>
+        <li><a class="item" href="#"><i class="bi bi-bell"></i>　通知</a></li>
+        <li><a class="item" href="#"><i class="bi bi-envelope"></i>　メッセージ</a></li>
+        <li><a class="item" href="#"><i class="bi bi-bookmark"></i>　ブックマーク</a></li>
+        <li><a class="item" href="#"><i class="bi bi-twitter"></i>　Twitter Blue</a></li>
+        <li><a class="item" href="#"><i class="bi bi-person"></i>　プロフィール</a></li>
+        <li><a class="item" href="#"><i class="bi bi-three-dots"></i>　もっとみる</a></li>
+        <li><button class="btn btn-primary mt-3 rounded-pill" style="background-color: #1d9bf0;">投稿する</button></li>
+        <li>
+          <div class="user_information">
+           <div class="user-icon" alt="プロフィール画像">
+              <img src="{% static 'images/user_icon.jpg'%}">
+           </div>
+          <div class="user_name">
+            <P class='top_name'>{{ user.display_name}}</p>
+            <p>{{ user.username }}</p>
+          </div>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <div class="content">
+      <div class="flex-content">
+        <div class="cp_tab">
+         <div class="tab">
+            <input type="radio" name="cp_tab" id="tab1_1" aria-controls="first_tab01" checked />
+            <label for="tab1_1">おすすめ</label>
+          </div>
+          <div class="tab">
+            <input type="radio" name="cp_tab" id="tab1_2" aria-controls="second_tab01" />
+            <label for="tab1_2">フォロー中</label>          
+          </div>
+          <div class="cp_tabpanels">
+            <div id="first_tab01" class="cp_tabpanel">
+            <p>おすすめ</p>
+            </div>
+            <div id="second_tab01" class="cp_tabpanel">
+            <p>フォロー中</p>
+            </div>
+          </div>
+      </div> 
+    </div>
+
+      <div class="fixed-content">
+         <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="form-with-icon">
+        <div class="container">
+          <div class="form-card">
+          <div class="user-icon" alt="プロフィール画像">
+              <img src="{% static 'images/user_icon.jpg'%}">
+          </div>
+              <div class="form-fields">
+              {{ form.as_p }}
+              <input type="submit" value="投稿する" />
+              </div>
+            </div>
+          </div>
+        </form>
+
+          {% for post in object_list %}
+            <div class="post">
+              <p>{{ post.memo }}</p>
+          {% if post.image %}
+                <img src="{{ post.image.url }}" />
+          {% endif %}
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

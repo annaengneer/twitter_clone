@@ -48,8 +48,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
     'django.contrib.sites',
+    'django_seed',
+
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
@@ -162,10 +163,10 @@ ACCOUNT_LOGOUT_ON_GET = True
 ACCOUNT_LOGOUT_REDIRECT_URL ='/accounts/signup/'
 
 ACCOUNT_LOGIN_METHODS = {"username", "email"}
-ACCOUNT_USERNAME_REQUIRED=True
+# ACCOUNT_USERNAME_REQUIRED=True
 
 ACCOUNT_SIGNUP_FORM_CLASS = "twitter_app.forms.SignUpForm"
-ACCOUNT_SIGNUP_FIELDS = ["username*", "email*", "password1*", "password2*"]
+ACCOUNT_SIGNUP_FIELDS = [ "email", "username*","password1*", "password2*"]
 
 ACCOUNT_EMAIL_VERIFICATION = "optional"
 
