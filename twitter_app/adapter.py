@@ -3,7 +3,7 @@ from allauth.utils import generate_unique_username
 
 class CustomAccountAdapter(DefaultAccountAdapter):
     def generate_unique_username(self, txts, regex=None):
-        base_username = '@githabuser'
+        base_username = '@githubuser'
         return generate_unique_username(
             [base_username],
             regex=r'^@[\w]+$',
