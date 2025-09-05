@@ -3,7 +3,7 @@ from twitter_app.models import Post
 from django.utils import timezone
 import random
 
-User = get_user_model
+User = get_user_model()
 
 for i in range(10):
     user = User.objects.create_user(
