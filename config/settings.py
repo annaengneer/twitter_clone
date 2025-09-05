@@ -177,6 +177,7 @@ EMAIL_PORT = int(os.getenv('EMAIL_PORT',587))
 EMAIL_USE_TLS = env.bool('EMAIL_USE_TLS', False)
 EMAIL_BACKEND = env("EMAIL_BACKEND", default="django.core.mail.backends.console.EmailBackend")
 DEFAULT_FROM_EMAIL = env("DEFAULT_FROM_EMAIL", default="webmastar@localhost")
+ACCOUNT_ADAPTER = 'twitter_app.adapter.CustomAccountAdapter'
 
 SOCIALACCOUNT_PROVIDERS = {
     "github": {
