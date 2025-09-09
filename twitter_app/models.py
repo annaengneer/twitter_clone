@@ -66,6 +66,8 @@ class User(AbstractBaseUser,PermissionsMixin):
     is_staff = models.BooleanField(default=False)
     date_joined = models.DateTimeField(default=timezone.now)
     objects = UserManager()
+    created_at = models.DateTimeField(default=timezone.now)
+    updated_at = models.DateTimeField(auto_now=True)
 
     USERNAME_FIELD = 'username'
     EMAIL_FIELD = 'email'
@@ -79,18 +81,21 @@ class User(AbstractBaseUser,PermissionsMixin):
         verbose_name_plural = "Users"
         ordering = ["-date_joined"]
 
-class Connection(models.Model):
-    follower = models.ForeignKey(User, related_name='follower', on_delete=models.CASCADE)
-    following = models.ForeignKey(User, related_name='following', on_delete=models.CASCADE)
-    date_created = models.DateTimeField(auto_now_add=True)
+class Relation(models.Model):
+    followers = models.ForeignKey(User, related_name='follower', on_delete=models.CASCADE)
+    followings = models.ForeignKey(User, related_name='following', on_delete=models.CASCADE)
+    created = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(default=timezone.now)
+    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return "{}:{}".format(self.follower.username, self.following.username)
 
 class Post(models.Model):
-    memo = models.TextField(default="")
+    content = models.TextField(default="")
     image = models.ImageField(upload_to='images',null=True, blank=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     created_at = models.DateTimeField(default=timezone.now)
+    updated_at = models.DateTimeField(auto_now=True)
     def __str__(self):
         return f'{self.user.username} - {self.memo[:20]}'

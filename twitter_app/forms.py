@@ -36,13 +36,13 @@ class SignUpForm(UserCreationForm):
 class PostForm(forms.ModelForm):
     class Meta:
         model = Post
-        fields = ['memo', 'image']
+        fields = ['content', 'image']
         labels = {
-            'memo': '',
+            'content': '',
             'image': '',
         }
         widgets = {
-            'memo': forms.Textarea(attrs={
+            'content': forms.Textarea(attrs={
                 'placeholder': '今どうしてる？',
                 'rows': 3,
                 'class': 'form-control',
