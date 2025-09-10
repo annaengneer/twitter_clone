@@ -3,12 +3,16 @@ from allauth.account.adapter import get_adapter
 from allauth.account.utils import setup_user_email
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserCreationForm
+from django.views.generic import ListView, CreateView
+from django.urls import reverse_lazy
+from .models import Post
 
 User = get_user_model()
 
 class SignUpForm(UserCreationForm):
     email = forms.EmailField(required=True, widget=forms.EmailInput(attrs={'class': 'form__input'}))
     username = forms.CharField(required=True, widget=forms.TextInput(attrs={'class': 'form__input'}))
+    display_name = forms.CharField(label='表示名', required=True, widget=forms.TextInput(attrs={'class': 'form__input'}))
     phone_number = forms.CharField(label="電話番号", required=False, widget=forms.TextInput(attrs={'class': 'form__input'}))
     birth_date = forms.DateField(label="生年月日", required=False, widget=forms.DateInput(attrs={'class': 'form__input', 'type': 'date'}))
     password1 = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form__input'}))
@@ -16,11 +20,31 @@ class SignUpForm(UserCreationForm):
 
     class Meta:
         model = User
-        fields = ("email", "username", "phone_number", "birth_date", "password1", "password2")
+        fields = ("email", "username", "display_name", "phone_number", "birth_date", "password1", "password2")
     
     def signup(self, request, user):
+        print(self.cleaned_data)
+        user.display_name = self.cleaned_data.get("display_name")
         user.phone_number = self.cleaned_data.get("phone_number")
         user.birth_date = self.cleaned_data.get("birth_date")
         user.email = self.cleaned_data.get("email", user.email)
         user.save()
         return user
+    
+
+
+class PostForm(forms.ModelForm):
+    class Meta:
+        model = Post
+        fields = ['content', 'image']
+        labels = {
+            'content': '',
+            'image': '',
+        }
+        widgets = {
+            'content': forms.Textarea(attrs={
+                'placeholder': '今どうしてる？',
+                'rows': 3,
+                'class': 'form-control',
+            })
+        }

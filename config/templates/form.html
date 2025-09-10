@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <div class="form-card">
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="投稿する">
+    </form>
+    <p>{{ post.memo }}</p>
+    {% if post.image %}
+      <img src="{{ post.image.url }}" style="max-width: 100%;">
+      {% endif %}
+  </div>
+{% endblock %}

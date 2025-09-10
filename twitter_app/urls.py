@@ -1,9 +1,10 @@
 from django.urls import path
 from . import views
 
-app_name = 'twiiter_app'
+app_name = 'twitter_app'
 
 urlpatterns = [
-    path("", views.IndexView.as_view(), name="index"),
+    path('', views.top, name='top'),
     path('signup/', views.SignupView.as_view(), name="signup"),
+    path('form/', views.form_view, name="form")
 ]

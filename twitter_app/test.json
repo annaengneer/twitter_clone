@@ -1,0 +1,10 @@
+[
+    {
+      "model": "twitter_app.user",
+      "fields": {
+        "username": "testuser",
+        "email": "sample1@gmail.com",
+        "phone_number": "09087876565"
+      }
+    }
+]
