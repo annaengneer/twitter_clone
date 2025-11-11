@@ -26,23 +26,11 @@ cloudinary.config(
     api_secret=os.getenv('CLOUDINARY_API_SECRET')
 )
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = env("SECRET_KEY", default=os.environ.get("SECRET_KEY", "dev-insecure-key"))
-# SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env.bool("DEBUG", default=False)
-# ALLOWED_HOSTS=env.list("ALLOWED_HOSTS", default=["localhost", "127.0.0.1"])
-# ALLOWED_HOSTS = ['*']
-ALLOWED_HOSTS = ["localhost", "127.0.0.1", "0.0.0.0", "web"]
+ALLOWED_HOSTS = ["localhost", "127.0.0.1", "0.0.0.0", "web", "still-reaches-06925-c85c2689c92d.herokuapp.com"]
 MEDIA_URL = '/media/'
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
-
-print("STARTING SETTINGS.PY")
-# print("env file path =", str(BASE_DIR / ".env"))
-print("DEBUG =", DEBUG)
-print("ALLOWED_HOSTS =", ALLOWED_HOSTS)
 
 CSRF_TRUSTED_ORIGINS = env.list("CSRF_TRUSTED_ORIGINS", default=[
     "https://still-reaches-06925.herokuapp.com","https://still-reaches-06925-c85c2689c92d.herokuapp.com"
