@@ -1,8 +1,6 @@
-
-
 services:
   db:
-    image: postgres
+    image: postgres:15
     platform: linux/amd64
     volumes:
       - db-data:/var/lib/postgresql/data
@@ -35,9 +33,9 @@ services:
       EMAIL_PORT: 1025
 
   smtp:
-      image: schickling/mailcatcher
-      ports:
-        - "1080:1080"
-        - "1025:1025"
+    image: schickling/mailcatcher
+    ports:
+      - "1080:1080"
+      - "1025:1025"
 volumes:
   db-data:

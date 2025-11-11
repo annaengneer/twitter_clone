@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'base_layout.html' %}
 {% load i18n %}
 {% load static%}
 
@@ -11,20 +11,22 @@
 {% endblock %}
 
 {% block extra_head %}
-<link rel="stylesheet" href="{% static 'css/top_page.css' %}">
+<link rel="stylesheet" href="{% static 'css/top_page.css' %}?v=1">
+  <link rel="stylesheet" href="{% static 'css/layout.css' %}?v=2">
 {% endblock extra_head %}
 
 {% block content %}
   <div class="app">
-      {% include "top_page/top_unauthenticated_header.html" %}
+      {% include "public/unauthenticated_header.html" %}
       <div class="main">
-        {% include "top_page/top_unauthenticated_sidebar.html" %}
-        <div class="content">
-          <div class="flex-content">
-            <h1>Twitterを使ってみよう</h1>
-            <p>今すぐ登録して、タイムラインをカスタマイズしましょう</p>
+        {% include "public/unauthenticated_sidebar.html" %}
+        <main class="main-content top-page">
+          <div class="content">
+            <div class="flex-content">
+              <h1>Twitterを使ってみよう</h1>
+              <p>今すぐ登録して、タイムラインをカスタマイズしましょう</p>
+            </div>
           </div>
-
           <div class="fixed-content">
             {% if user.is_authenticated %}
             <form method="post" action="{%url 'account_logout' %}" style="display: inline;">
@@ -40,4 +42,5 @@
           </div>
         </div>
       </div>
+      </main>
   {% endblock %}

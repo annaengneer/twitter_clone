@@ -48,3 +48,16 @@ class PostForm(forms.ModelForm):
                 'class': 'form-control',
             })
         }
+
+class ProfileForm(forms.ModelForm):
+        username = forms.CharField(required=True, widget=forms.TextInput(attrs={'class': 'form__input'}))
+        display_name = forms.CharField(label='表示名', required=True, widget=forms.TextInput(attrs={'class': 'form__input'}))
+        icon_image = forms.ImageField(label='アイコン画像', required=True, widget=forms.TextInput(attrs={'class': 'form__input'}))
+        header_image = forms.ImageField(label=' ヘッダー画像', required=True, widget=forms.TextInput(attrs={'class': 'form__input'}))
+        introduce_content = forms.CharField(label='自己紹介', required=True, widget=forms.TextInput(attrs={'class': 'form__input'}))
+        place = forms.CharField(label='場所', required=True, widget=forms.TextInput(attrs={'class': 'form__input'}))
+        birth_date = forms.DateField(label='生年月日', required=False, widget=forms.DateInput(attrs={'class': 'form__input', 'type': 'date'}))
+
+        class Meta:
+            model = User
+            fields = ("username", "display_name", "icon_image", "header_image", "introduce_content", "place", "birth_date")

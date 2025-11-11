@@ -1,0 +1,89 @@
+{% extends "base_layout.html" %}
+{% load static %}
+{% block extra_head %}
+<!-- <link rel="stylesheet" href="{% static 'css/profile.css' %}?v=1"> -->
+<link rel="stylesheet" href="{% static 'css/layout.css' %}?v=9999">
+<link rel="stylesheet" href="{% static 'css/profile.css' %}?v=9999">
+{% endblock extra_head %} 
+{% block title %} 
+{% if user.is_authenticated %}
+MyPage 
+{% else %}
+ Main 
+ {% endif %} 
+ {% endblock %} 
+ {% block page_content %}
+    <div class="profile-header" enctype="multipart/form-data">
+      {% if profile.header_image %}
+      <img
+        src="{{ profile.header_image.url }}"
+        alt="ヘッダー画像"
+        class="header-image"
+      />
+      <div class="edit-profile-btn">
+        <a href="{% url 'twitter_app:profile' %}" class="btn-edit-profile">プロフィールを編集</a>
+      </div>
+      {% endif %}
+      <div class="icon">
+        {% if profile.icon_image %}
+        <img
+          src="{{ profile.icon_image.url }}"
+          alt="プロフィール画像"
+          class="icon-image"
+        />
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="profile-main" enctype="multipart/form-data">
+      <div class="info">
+        <h2>{{ profile.display_name }}</h2>
+        <p>{{ profile.user.username }}</p>
+        <p>{{ profile.introduce_content }}</p>
+        <div class="meta-group">
+        {% if profile.place %}
+          <p><i class="bi bi-geo-alt"></i> {{ profile.place }}</p>
+        {% endif %}
+        {% if profile.website %}
+        <p><i class="bi bi-link-45deg"></i> <a href="{{ profile.website }}" target="_blank" rel="noopener noreferrer">{{ profile.website }}</a></p>
+        {% endif %}
+        {% if profile.birth_date %}
+          <p><i class="bi bi-balloon"></i> {{ profile.birth_date }}</p>
+        {% endif %}
+        </div>
+        <div class="follow-stats">
+          <span><strong>{{ profile.following_count }}</strong> フォロー中</span>
+          <span><strong>{{ profile.follower_count }}</strong> フォロワー</span>
+        </div>
+      </div>
+    </div>
+    <div class="cp_tab">
+      <input type="radio" name="cp_tab" id="tab_tweet" checked>
+      <label for="tab_tweet">ツイート</label>
+    
+      <input type="radio" name="cp_tab" id="tab_reply">
+      <label for="tab_reply">ツイートと返信</label>
+    
+      <input type="radio" name="cp_tab" id="tab_media">
+      <label for="tab_media">メディア</label>
+    
+      <input type="radio" name="cp_tab" id="tab_like">
+      <label for="tab_like">いいね</label>
+    
+      <div class="cp_tabpanels">
+        <div id="tweet_panel" class="cp_tabpanel">
+          {% for post in posts %}
+            <div class="card my-3">
+              <div class="card-body">
+                <p>{{ post.content }}</p>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+        <div id="reply_panel" class="cp_tabpanel">ツイートと返信一覧</div>
+        <div id="media_panel" class="cp_tabpanel">メディア付きツイート</div>
+        <div id="like_panel" class="cp_tabpanel">いいねしたツイート</div>
+      </div>
+    </div>
+
+{% endblock page_content %}

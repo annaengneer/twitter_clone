@@ -1,22 +1,23 @@
 from django.contrib.auth import login, authenticate
+from django.contrib.auth.decorators import login_required
 from django.views.generic import CreateView
-
 from django.urls import reverse_lazy
-from .forms import SignUpForm
-from django.shortcuts import render, redirect
+from .forms import SignUpForm, ProfileForm
+from django.shortcuts import render, redirect, get_object_or_404
 from .forms import PostForm
-from .models import Post
+from .models import Post,Profile
+from twitter_app.models import Post
 
 def top(request):
     if request.user.is_authenticated:
         form = PostForm()
         posts = Post.objects.all().order_by('-id')
-        return render(request, "top_after.html",{
+        return render(request, "top_authenticated.html",{
             "form": form,
             "object_list": posts,
         })
     else:
-        return render(request, "top_before.html") 
+        return render(request, "top_unauthenticated.html") 
 
 def form_view(request):
     if request.method == 'POST':
@@ -42,3 +43,31 @@ class SignupView(CreateView):
         login(self.request, user)
         return response
 
+@login_required  
+def ProfileView(request):
+    try:
+        profile = request.user.profile
+    except Profile.DoesNotExist:
+        profile = Profile.objects.create(user=request.user)
+
+    if request.method == 'POST':
+        form = ProfileForm(request.POST, request.FILES, instance=profile)
+        if form.is_valid():
+            form.save()
+            return redirect('profile')
+    else:
+        form = ProfileForm(instance=profile)
+
+    posts = Post.objects.filter(user=request.user).order_by('-created_at')
+
+    context = {
+        'profile': profile,
+        'form': form,
+        'posts': posts,
+    }
+    return render(request, 'profile.html', context)
+
+def profile_view(request, username):
+    profile = get_object_or_404(Profile, user__username=username)
+    posts = Post.objects.filter(user=profile.user).order_by('-created_at')
+    return render(request, 'profile.html', {'profile': profile, 'posts': posts})
