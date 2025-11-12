@@ -1,0 +1,243 @@
+body {
+    margin: 0;
+    background-color: #333;
+    color: #fff;
+    font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+  }
+  
+  .main-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #333;
+    color: #fff;
+    padding: 20px 40px;
+    border-bottom: 1px solid #4d4d4d;
+    height: 70px;
+  }
+  
+  .main-header h1 {
+    font-size: 24px;
+    font-weight: 700;
+    margin: 0;
+  }
+  
+  .main-header .menu-item,
+  .main-header .logout-btn {
+    color: #fff;
+    text-decoration: none;
+    margin-left: 15px;
+    border: 1px solid #666;
+    border-radius: 20px;
+    padding: 6px 16px;
+    transition: 0.2s;
+    font-size: 14px;
+    background: none;
+    cursor: pointer;
+  }
+  
+  .main-header .menu-item:hover,
+  .main-header .logout-btn:hover {
+    background-color: #1d9bf0;
+    border-color: #1d9bf0;
+  }
+
+  .main-content {
+    flex: 1;
+    min-height: calc(100vh - 70px);
+    display: flex;
+    flex-direction: column;
+    background-color: #333;
+    padding: 30px;
+    overflow-y: auto;
+    min-width: 0;
+    box-sizing: border-box;
+    position: relative;
+    z-index: 0;
+    margin-left: -1px !important;
+  }
+  
+  .layout-container {
+    display: flex;
+    background-color: #333;
+    color: #fff;
+    min-height: calc(100vh - 70px);
+    align-items: stretch; 
+  }
+  
+  .sidebar {
+    width: 25%;
+    background-color: #333;
+    color: #fff;
+    border-right: none;
+    padding: 20px;
+    font-size: 20px;
+
+    box-sizing: border-box;
+    position: relative;
+    z-index: 2;
+    flex-shrink: 0;
+    min-height: calc(100vh - 70px);
+  }
+
+  .sidebar ul {
+    padding-left: 20px;
+    margin: 0;
+  }
+  
+  .sidebar li {
+    padding: 15px 0;
+    list-style: none;
+  }
+  
+  .sidebar a {
+    color: #fff !important;
+    text-decoration: none;
+  }
+  
+  .sidebar a:hover {
+    color: #1d9bf0;
+  }
+
+  .sidebar button {
+    background-color: #1d9bf0 !important;
+    color: #fff;
+    font-weight: 700;
+    border: none;
+    border-radius: 50px;
+    width: 85%;
+    margin: 15px auto 0;
+    padding: 12px 0;
+    display: block;
+    font-size: 16px;
+    transition: background-color 0.2s ease;
+    box-shadow: none !important;
+    outline: none !important;
+  }
+
+  .sidebar button:hover {
+    background-color: #1a8cd8 !important;
+  }
+
+  .sidebar button:active {
+    background-color: #1879c5 !important;
+  }
+
+  .form-card, .post {
+    background-color: #333;
+    color: #fff;
+    display: flex;
+  }
+  
+  .user-icon img {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+  
+  form textarea,
+  form input[type="text"] {
+    background-color: #333;
+    color: #fff;
+    padding: 10px;
+    font-size: 14px;
+    width: 100%;
+    border: none;
+    border-bottom: 1px solid #4d4d4d;
+  }
+  
+  form input[type="submit"] {
+    width: 30%;
+    padding: 8px 10px;
+    margin: 20px 0 0 60%;
+    border: none;
+    border-radius: 30px;
+    background-color: #1d9bf0;
+    color: #fff;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  
+  form input[type="submit"]:hover {
+    background-color: #1a8cd8;
+  }
+  
+  textarea.form-control {
+    background-color: #333 ;
+    color: #ccc ;
+    border: none;
+  }
+ 
+
+  .sidebar .item:hover,
+  .nav .item:hover,
+  .nav-pills .item:hover {
+    color: #1d9bf0 ;
+    background: transparent;
+  }
+  .sidebar .item i {
+    font-size: 22px;
+  }
+
+  .layout-container > .sidebar {
+    background-color: #333;
+    border-right: 1px solid #4d4d4d;
+    padding: 20px;
+    padding: 20px;
+    font-size: 20px;
+    box-sizing: border-box;
+    position: relative;
+    z-index: 2;
+  }
+  
+  .sidebar .nav,
+  .sidebar .nav-pills,
+  .sidebar .nav li,
+  .sidebar .nav a {
+    background-color: transparent;
+    box-shadow: none;
+  }
+  .sidebar .user_information {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: auto;
+    padding-top: 15px;
+    border-top: none;
+  }
+  
+  .sidebar .user_information .user-icon img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+  
+  .sidebar .user_information .user_name {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.2;
+  }
+  
+  .sidebar .user_information .user_name .top_name {
+    color: #fff;
+    font-weight: 700;
+    font-size: 20px;
+    margin: 0;
+  }
+  
+  .sidebar .user_information .user_name p {
+    color: #aaa;
+    font-size: 17px;
+    margin: 0;
+  }
+  
+  @media (max-width: 768px) {
+    .sidebar {
+      display: none;
+    }
+    .main-content {
+      padding: 20px;
+    }
+  }

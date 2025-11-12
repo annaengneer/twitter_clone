@@ -9,31 +9,33 @@ https://docs.djangoproject.com/en/4.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
-
-import environ
 import os
+import environ
 from pathlib import Path
+import cloudinary
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 env = environ.Env()
 environ.Env.read_env(env_file=str(BASE_DIR) + "/.env")
+# Build paths inside the project like this: BASE_DIR / 'subdir'.
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
+cloudinary.config(
+    cloud_name=os.getenv('CLOUDINARY_CLOUD_NAME'),
+    api_key=os.getenv('CLOUDINARY_API_KEY'),
+    api_secret=os.getenv('CLOUDINARY_API_SECRET')
+)
 
-# SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = env("SECRET_KEY", default=os.environ.get("SECRET_KEY", "dev-insecure-key"))
-# SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env.bool("DEBUG", default=False)
-
-ALLOWED_HOSTS=env.list("ALLOWED_HOSTS",default=["localhost", "127.0.0.1"])
-
+ALLOWED_HOSTS = ["localhost", "127.0.0.1", "0.0.0.0", "web", "still-reaches-06925-c85c2689c92d.herokuapp.com"]
+MEDIA_URL = '/media/'
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 CSRF_TRUSTED_ORIGINS = env.list("CSRF_TRUSTED_ORIGINS", default=[
     "https://still-reaches-06925.herokuapp.com","https://still-reaches-06925-c85c2689c92d.herokuapp.com"
 ])
-ACCOUNT_DEFALT_HTTP_PROTOCOL = os.environ.get("DEFAULT_HTTP_PROTOCOL", "http")
+ACCOUNT_DEFAULT_HTTP_PROTOCOL = os.environ.get("DEFAULT_HTTP_PROTOCOL", "http")
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 USE_X_FORWARDED_HOST = True
 SITE_ID=int(os.environ.get("SITE_ID", "1"))
@@ -42,6 +44,9 @@ AUTH_USER_MODEL = 'twitter_app.User'
 # Application definition
 
 INSTALLED_APPS = [
+    'cloudinary',
+    'cloudinary_storage',
+
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -80,7 +85,6 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
-STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 ROOT_URLCONF = 'config.urls'
 
@@ -148,9 +152,15 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / "staticfiles"
-STATICFILES_DIRS = [BASE_DIR / "static"]
+STATICFILES_DIRS = [
+    BASE_DIR / "static",
+    ]
+if DEBUG:
+    STATICFILES_STORAGE = "django.contrib.staticfiles.storage.StaticFilesStorage"
+else:
+    STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
@@ -166,7 +176,7 @@ ACCOUNT_LOGIN_METHODS = {"username", "email"}
 # ACCOUNT_USERNAME_REQUIRED=True
 
 ACCOUNT_SIGNUP_FORM_CLASS = "twitter_app.forms.SignUpForm"
-ACCOUNT_SIGNUP_FIELDS = [ "email", "username*","password1*", "password2*"]
+ACCOUNT_SIGNUP_FIELDS = [ "email", "username*","password1*", "password2"]
 
 ACCOUNT_EMAIL_VERIFICATION = "optional"
 

@@ -1,6 +1,6 @@
 {% load static %}
-<div class="sidebar">
-  <ul>
+<div class="sidebar-inner d-flex flex-column" style="height: 100%;">
+  <ul class="nav nav-pills flex-column mb-auto">
     <li><a class="item" href="#"><i class="bi bi-house-heart"></i>　ホーム</a></li>
     <li><a class="item" href="#"><i class="bi bi-hash"></i>　話題を検索</a></li>
     <li><a class="item" href="#"><i class="bi bi-bell"></i>　通知</a></li>
@@ -12,8 +12,8 @@
     <li><button class="btn btn-primary mt-3 rounded-pill" style="background-color: #1d9bf0;">投稿する</button></li>
     <li>
     <div class="user_information">
-        <div class="user-icon" alt="プロフィール画像">
-            <img src="{% static 'images/user_icon.jpg'%}">
+        <div class="user-icon">
+            <img src="{% static 'images/user_icon.jpg'%}" alt="プロフィール画像">
         </div>
         <div class="user_name">
             <P class='top_name'>{{ user.display_name}}</p>
@@ -23,4 +23,3 @@
         </li>
     </ul>
 </div>
-
