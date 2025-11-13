@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}プロフィール編集{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'css/profile_edit.css' %}?v=9999">
+{% endblock %}
+
+{% block content %}
+<div class="profile-edit">
+  <h2>プロフィールを編集</h2>
+
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    <div class="form-group">
+      <label for="username">ユーザー名</label>
+      <input type="text" id="name" name="username" value="{{ form.username.value }}">
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">ヘッダー画像</label>
+      {% if form.instance.header_image %}
+        <img src="{{ form.instance.header_image.url }}" alt="ヘッダー画像">
+      {% endif %}
+      <input type="file" name="header_image">
+    </div>
+
+    <div class="form-group">
+        <label class="form-label">アイコン画像</label>
+        {% if form.instance.icon_image %}
+            <img src="{{ form.instance.icon_image.url }}" alt="アイコン画像">
+        {% endif %}
+        <input type="file" name="icon_image">
+    </div>
+
+    <div class="form-group">
+      <label for="introduce_content">プロフィール</label>
+      <textarea id="introduce_content" name="introduce_content" rows="4">{{ form.introduce_content.value }}</textarea>
+    </div>
+
+    <div class="form-group">
+      <label for="place">場所</label>
+      <input type="text" id="place" name="place" value="{{ form.place.value }}">
+    </div>
+
+    <div class="form-group">
+      <label for="website">Webサイト</label>
+      <input type="url" id="website" name="website" value="{{ form.website.value }}">
+    </div>
+
+    <div class="form-group">
+      <label for="birth_date">誕生日</label>
+      <input type="date" id="birth_date" name="birth_date" value="{{ form.birth_date.value|date:'Y-m-d' }}">
+    </div>
+
+    <div class="form-actions">
+      <a href="{% url 'twitter_app:profile_detail' user.username %}">キャンセル</a>
+      <button type="submit">保存</button>
+    </div>
+  </form>
+</div>
+{% endblock %}

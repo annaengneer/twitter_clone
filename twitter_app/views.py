@@ -71,3 +71,22 @@ def profile_view(request, username):
     profile = get_object_or_404(Profile, user__username=username)
     posts = Post.objects.filter(user=profile.user).order_by('-created_at')
     return render(request, 'profile.html', {'profile': profile, 'posts': posts})
+
+@login_required
+def edit_profile(request):
+    profile = request.user.profile
+    if request.method == 'POST':
+        form = ProfileForm(request.POST, request.FILES, instance=profile, user= request.user)
+        if form.is_valid():
+
+            request.user.username = form.cleaned_data['username']
+            if hasattr(request.user,'display_name'):
+                request.user.display_name = form.cleaned_data['display_name']
+            request.user.save()
+
+            form.save()
+            return redirect('twitter_app:profile_detail', username=request.user.username)
+    else:
+        form = ProfileForm(instance=profile, user=request.user)
+        
+    return render(request, 'profile_edit.html', {'form': form, 'profile': profile})
