@@ -5,7 +5,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserCreationForm
 from django.views.generic import ListView, CreateView
 from django.urls import reverse_lazy
-from .models import Post
+from .models import Post, Profile
 
 User = get_user_model()
 
@@ -50,14 +50,34 @@ class PostForm(forms.ModelForm):
         }
 
 class ProfileForm(forms.ModelForm):
-        username = forms.CharField(required=True, widget=forms.TextInput(attrs={'class': 'form__input'}))
-        display_name = forms.CharField(label='表示名', required=True, widget=forms.TextInput(attrs={'class': 'form__input'}))
-        icon_image = forms.ImageField(label='アイコン画像', required=True, widget=forms.TextInput(attrs={'class': 'form__input'}))
-        header_image = forms.ImageField(label=' ヘッダー画像', required=True, widget=forms.TextInput(attrs={'class': 'form__input'}))
-        introduce_content = forms.CharField(label='自己紹介', required=True, widget=forms.TextInput(attrs={'class': 'form__input'}))
-        place = forms.CharField(label='場所', required=True, widget=forms.TextInput(attrs={'class': 'form__input'}))
-        birth_date = forms.DateField(label='生年月日', required=False, widget=forms.DateInput(attrs={'class': 'form__input', 'type': 'date'}))
+    username = forms.CharField(label='ユーザー名', required=True)
+    display_name = forms.CharField(label='表示名', required=False)
 
-        class Meta:
-            model = User
-            fields = ("username", "display_name", "icon_image", "header_image", "introduce_content", "place", "birth_date")
+    class Meta:
+        model = Profile
+        fields = [
+            'username',
+            'display_name',
+            'icon_image',
+            'header_image',
+            'introduce_content',
+            'place',
+            'website',
+            'birth_date',
+        ]
+        widgets = {
+            'introduce_content': forms.Textarea(attrs={'class': 'form__input'}),
+            'place': forms.TextInput(attrs={'class': 'form__input'}),
+            'website': forms.URLInput(attrs={'class': 'form__input'}),
+            'birth_date': forms.DateInput(attrs={'class': 'form__input', 'type': 'date'}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        # view から渡された user オブジェクトを受け取る
+        user = kwargs.pop('user', None)
+        super().__init__(*args, **kwargs)
+        if user:
+            # Userモデルから username / display_name の初期値を反映
+            self.fields['username'].initial = user.username
+            if hasattr(user, 'display_name'):
+                self.fields['display_name'].initial = user.display_name
