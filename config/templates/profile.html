@@ -38,7 +38,7 @@ MyPage
     <div class="profile-main" enctype="multipart/form-data">
       <div class="info">
         <h2>{{ profile.display_name }}</h2>
-        <p>{{ profile.user.username }}</p>
+        <p>@{{ profile.user.username }}</p>
         <p>{{ profile.introduce_content }}</p>
         <div class="meta-group">
         {% if profile.place %}
@@ -72,12 +72,8 @@ MyPage
     
       <div class="cp_tabpanels">
         <div id="tweet_panel" class="cp_tabpanel">
-          {% for post in posts %}
-            <div class="card my-3">
-              <div class="card-body">
-                <p>{{ post.content }}</p>
-              </div>
-            </div>
+          {% for post in object_list %}
+            {% include "_post_card.html" %}
           {% endfor %}
         </div>
         <div id="reply_panel" class="cp_tabpanel">ツイートと返信一覧</div>

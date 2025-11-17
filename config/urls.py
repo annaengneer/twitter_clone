@@ -6,5 +6,4 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include("allauth.urls")),
     path('', include('twitter_app.urls')),
-    path("", top, name="home"),
 ]
