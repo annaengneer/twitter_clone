@@ -198,7 +198,7 @@ body {
     gap: 10px;
   }
 
-  .sidebar,
+.sidebar,
 .sidebar * {
   background-color: #333 !important;
 }
@@ -240,6 +240,18 @@ body {
     text-align: left;
     padding: 0;
     margin: 0;
+  }
+  
+  .post-actions {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-top: 6px;
+  }
+
+  .post-actions i {
+    font-size: 20px;
+    color: #6C757D;
   }
 
   @media (max-width: 768px) {

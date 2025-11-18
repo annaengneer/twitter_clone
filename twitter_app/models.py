@@ -55,8 +55,8 @@ phone_validtor = RegexValidator(
 class User(AbstractBaseUser,PermissionsMixin):
     
     username_validator = RegexValidator(
-        regex=r'^@[\w]+$',
-        message="ユーザー名は@から始まり、英数字・アンダースコアのみ使えます"
+        regex=r'^[\w]+$',
+        message="ユーザー名は英数字・アンダースコアのみ使えます"
     )
 
     username = models.CharField(max_length=20,unique=True,validators=[username_validator],blank=False)
@@ -99,7 +99,7 @@ class Relation(models.Model):
 
 class Post(models.Model):
     content = models.TextField(default="")
-    image = models.ImageField(upload_to='images',null=True, blank=True)
+    image = CloudinaryField('images', null=True, blank=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(auto_now=True)

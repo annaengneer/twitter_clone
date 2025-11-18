@@ -252,11 +252,6 @@ body {
   border-radius: 2px;
 }
 
-.cp_tabpanels {
-  margin-top: 30px;
-  display: block;
-}
-
 .cp_tabpanel {
   display: none;
   color: #fff;
@@ -270,16 +265,23 @@ body {
   display: block;
 }
 
-
-.card {
-  background-color: #333 !important;
-  color: #fff !important;
-  border: 1px solid #4d4d4d !important;
+.cp_tabpanels,
+.cp_tabpanel,
+#tweet_panel {
+  display: block;
+  max-width: 650px;
+  margin: 0;
+  padding: 0;
+  text-align: left;
+  align-items: flex-start;
+  justify-content: flex-start;
 }
 
-.card-body p {
-  color: #fff !important;
-  font-size: 1rem;
+.cp_tabpanel .card,
+#tweet_panel .card,
+#tweet_panel .card.my-3 {
+  margin-left: 0;
+  margin-right: 0;
 }
 
 

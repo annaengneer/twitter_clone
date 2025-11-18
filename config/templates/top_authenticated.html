@@ -3,8 +3,8 @@
 {% load static %}
 
 {% block extra_head %}
-  <link rel="stylesheet" href="{% static 'css/top_page.css' %}?v=1">
-  <link rel="stylesheet" href="{% static 'css/layout.css' %}?v=2">
+  <link rel="stylesheet" href="{% static 'css/top_page.css' %}?v=9999">
+  <link rel="stylesheet" href="{% static 'css/layout.css' %}?v=9999">
   {% endblock extra_head %}
 
 {% block title %}
@@ -43,28 +43,31 @@
         <div class="container">
           <div class="form-card d-flex align-items-start">
             <div class="user-icon me-3">
-              <img src="{% static 'images/user_icon.jpg'%}" alt="プロフィール画像">
+              <img src="{{ user.profile.icon_image.url }}" alt="プロフィール画像">
           </div>
               <div class="flex-fill">
-              {{ form.as_p }}
+                {{ form.content }}
+                <div class="post-actions">
+                  <label for="id_image" style="cursor:pointer;">
+                    <i class="bi bi-image"></i>
+                  </label>
+                  {{ form.image }}
+                <i class="bi bi-filetype-gif"></i>
+                <i class="bi bi-list-task"></i>
+                <i class="bi bi-emoji-smile"></i>
+                <i class="bi bi-calendar2-check"></i>
+                <i class="bi bi-geo-alt"></i>
+              </div>
               <input type="submit" value="投稿する" class="btn btn-primary mt-2 rounded-pill"/>
               </div>
             </div>
           </div>
         </div>
        </form>
-
-          {% for post in object_list %}
-            <div class="card my-3">
-              <div class="card-body">
-              <p>{{ post.content }}</p>
-              {% if post.image %}
-                <img src="{{ post.image.url }}" alt="" class="img-fluid rounded mt-2" />
-              {% endif %}
-            </div>
-          </div>
-          {% empty %}
-            <p class="text-muted">まだ投稿がありません。</p>
-          {% endfor %}
-        </div>
+       {% for post in object_list %}
+          {% include "_post_card.html" %}
+       {% empty %}
+          <p class="text-muted">まだ投稿がありません。</p>
+       {% endfor %}
+      </div>
 {% endblock %}

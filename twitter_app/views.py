@@ -8,27 +8,23 @@ from .forms import PostForm
 from .models import Post,Profile
 from twitter_app.models import Post
 
+@login_required
 def top(request):
-    if request.user.is_authenticated:
-        form = PostForm()
-        posts = Post.objects.all().order_by('-id')
-        return render(request, "top_authenticated.html",{
-            "form": form,
-            "object_list": posts,
-        })
-    else:
-        return render(request, "top_unauthenticated.html") 
-
-def form_view(request):
     if request.method == 'POST':
-        form = Post(request.POST, request.FILES)
+        form = PostForm(request.POST, request.FILES)
         if form.is_valid():
-            form.save()
+            post = form.save(commit=False)
+            post.user = request.user
+            post.save()
             return redirect('twitter_app:top')
     else:
-        form = Post()
-    return render(request, 'form.html', {'form': form})
+        form = PostForm()
 
+    posts = Post.objects.all().order_by('-id')
+    return render(request, 'top_authenticated.html',{
+        "form":form,
+        "object_list":posts,
+    })
 
 class SignupView(CreateView):
     form_class = SignUpForm
@@ -70,7 +66,13 @@ def ProfileView(request):
 def profile_view(request, username):
     profile = get_object_or_404(Profile, user__username=username)
     posts = Post.objects.filter(user=profile.user).order_by('-created_at')
-    return render(request, 'profile.html', {'profile': profile, 'posts': posts})
+    
+    context = {
+        "profile": profile,
+        "object_list": posts,
+    }
+
+    return render(request, 'profile.html', context)
 
 @login_required
 def edit_profile(request):
