@@ -105,7 +105,16 @@ class Post(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     def __str__(self):
         return f'{self.user.username} - {self.content[:20]}'
-    
+
+class Comment(models.Model):
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name="comments")
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    content = models.TextField(max_length=140)
+    created_at = models.DateTimeField(default=timezone.now)
+
+    def __str__(self):
+        return f"{self.user.username}: {self.content[:20]}"
+
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="profile")
     icon_image = CloudinaryField("images",null=True, blank=True)
