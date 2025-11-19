@@ -5,7 +5,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserCreationForm
 from django.views.generic import ListView, CreateView
 from django.urls import reverse_lazy
-from .models import Post, Profile
+from .models import Post, Profile, Comment
 
 User = get_user_model()
 
@@ -49,6 +49,18 @@ class PostForm(forms.ModelForm):
             })
         }
 
+class CommentForm(forms.ModelForm):
+    class Meta:
+        model = Comment
+        fields = ["content"]
+        widgets = {
+            "content": forms.Textarea(attrs={
+                "class": "form-control",
+                "rows": 2,
+                "placeholder": "返信を入力..."
+            })
+        }
+
 class ProfileForm(forms.ModelForm):
     username = forms.CharField(label='ユーザー名', required=True)
     display_name = forms.CharField(label='表示名', required=False)
@@ -73,11 +85,9 @@ class ProfileForm(forms.ModelForm):
         }
 
     def __init__(self, *args, **kwargs):
-        # view から渡された user オブジェクトを受け取る
         user = kwargs.pop('user', None)
         super().__init__(*args, **kwargs)
         if user:
-            # Userモデルから username / display_name の初期値を反映
             self.fields['username'].initial = user.username
             if hasattr(user, 'display_name'):
                 self.fields['display_name'].initial = user.display_name

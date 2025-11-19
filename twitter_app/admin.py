@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.utils.html import format_html
-from .models import User,Profile
+from .models import User,Profile,Post
 
 # Register your models here.
 
@@ -63,3 +63,10 @@ class ProfileAdmin(admin.ModelAdmin):
     show_header_image.short_description = "ヘッダー画像"
 
 admin.site.register(Profile, ProfileAdmin)
+
+@admin.register(Post)
+class PostAdmin(admin.ModelAdmin):
+    list_display = ("id", "user", "content", "created_at")
+    list_filter = ("user", "created_at")
+    search_fields = ("content", "user__username")
+    ordering = ("-id",)

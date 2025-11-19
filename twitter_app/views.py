@@ -4,7 +4,7 @@ from django.views.generic import CreateView
 from django.urls import reverse_lazy
 from .forms import SignUpForm, ProfileForm
 from django.shortcuts import render, redirect, get_object_or_404
-from .forms import PostForm
+from .forms import PostForm, CommentForm
 from .models import Post,Profile
 from twitter_app.models import Post
 
@@ -75,7 +75,7 @@ def profile_view(request, username):
     return render(request, 'profile.html', context)
 
 @login_required
-def edit_profile(request):
+def profile_edit(request):
     profile = request.user.profile
     if request.method == 'POST':
         form = ProfileForm(request.POST, request.FILES, instance=profile, user= request.user)
@@ -92,3 +92,25 @@ def edit_profile(request):
         form = ProfileForm(instance=profile, user=request.user)
         
     return render(request, 'profile_edit.html', {'form': form, 'profile': profile})
+
+@login_required
+def post_detail(request, post_id):
+    post = get_object_or_404(Post,id=post_id)
+
+    if request.method == "POST":
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            new_comment = form.save(commit=False)
+            new_comment.post = post
+            new_comment.user = request.user
+            new_comment.save()
+            return redirect('twitter_app:post_detail', post_id=post.id)
+    else:
+        form = CommentForm()
+    comments = post.comments.order_by('-created_at')
+
+    return render(request, 'post_detail.html',{
+        "post": post,
+        "form": form,
+        "comments": comments,
+    })
