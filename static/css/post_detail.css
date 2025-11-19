@@ -109,6 +109,12 @@ form textarea:focus {
     margin-left: 20rem;
 }
 
+.like-action,
+.like-btn {
+    position: relative;
+    z-index: 10 !important;
+}
+
 
 @media (max-width: 768px) {
     .detail-left,

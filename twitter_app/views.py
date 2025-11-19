@@ -6,7 +6,7 @@ from .forms import SignUpForm, ProfileForm
 from django.shortcuts import render, redirect, get_object_or_404
 from .forms import PostForm, CommentForm
 from .models import Post,Profile
-from twitter_app.models import Post
+from twitter_app.models import Post, Like
 
 @login_required
 def top(request):
@@ -21,6 +21,9 @@ def top(request):
         form = PostForm()
 
     posts = Post.objects.all().order_by('-id')
+    for p in posts:
+        p.is_liked = p.likes.filter(user=request.user).exists()
+
     return render(request, 'top_authenticated.html',{
         "form":form,
         "object_list":posts,
@@ -66,7 +69,9 @@ def ProfileView(request):
 def profile_view(request, username):
     profile = get_object_or_404(Profile, user__username=username)
     posts = Post.objects.filter(user=profile.user).order_by('-created_at')
-    
+    for p in posts:
+        p.is_liked = p.likes.filter(user=request.user).exists()
+
     context = {
         "profile": profile,
         "object_list": posts,
@@ -96,6 +101,7 @@ def profile_edit(request):
 @login_required
 def post_detail(request, post_id):
     post = get_object_or_404(Post,id=post_id)
+    post.is_liked = post.likes.filter(user=request.user).exists()
 
     if request.method == "POST":
         form = CommentForm(request.POST)
@@ -114,3 +120,13 @@ def post_detail(request, post_id):
         "form": form,
         "comments": comments,
     })
+
+@login_required
+def post_like(request, post_id):
+    post = get_object_or_404(Post, id=post_id)
+    like, created = Like.objects.get_or_create(user=request.user, post=post)
+    
+    if not created:
+        like.delete()
+
+    return redirect(f"/post/{post.id}#post-{post.id}")
