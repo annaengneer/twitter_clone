@@ -109,5 +109,7 @@ def post_like(request, post_id):
     
     if not created:
         like.delete()
+    
+    base_url = request.META.get('HTTP_REFERER', '/')
 
-    return redirect(f"/post/{post.id}#post-{post.id}")
+    return redirect(f"{base_url}#post-{post.id}")
