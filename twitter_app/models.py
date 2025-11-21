@@ -102,8 +102,15 @@ class Post(models.Model):
     content = models.TextField(default="")
     image = CloudinaryField('images', null=True, blank=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    created_at = models.DateTimeField(default=timezone.now)
+    created_at = models.DateTimeField(auto_now=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    repost_from = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True, related_name='reposts')
+    
+    @property
+    def is_repost(self):
+        return self.repost_from is not None
+
     def __str__(self):
         return f'{self.user.username} - {self.content[:20]}'
 

@@ -8,16 +8,45 @@
           <span class="post-username">@{{ post.user.username }}</span>
       </div>
 
-      <p>{{ post.content }}</p>
+      {% if post.repost_from %}
+        <div class="repost-banner">
+            <i class="bi bi-repeat"></i>{{ post.user.display_name }}さんがリポスト
+        </div>
 
-      {% if post.image %}
-      <img src="{{ post.image.url }}" alt="" class="img-fluid rounded mt-2" />
-      {% endif %}
+        <div class="repost-original card mt-2 p-2">
+            <div class="d-flex align-items-center mb-2">
+                <img src="{{ post.repost_from.user.profile.icon_image.url }}" class="post-user-icon me-2" alt="icon">
+                <span class="post-display-name">{{ post.repost_from.user.display_name }}</span>
+                <span class="post-username">@{{ post.repost_from.user.username}}</span>
+            </div>
+             <p>{{ post.repost_from.content }}</p>
+
+             {% if post.repost_from.image %}
+                <img src="{{ post.repost_from.image.url }}" class="img-fluid rounded mt-2">
+            {% endif %}
+        </div>
+        {% else %}
+            <p>{{ post.content }}</p>
+
+            {% if post.image %}
+                    <img src="{{ post.image.url }}" alt="" class="img-fluid rounded mt-2" />
+            {% endif %}
+        {% endif %}
   </div>
-  <div class="post-actions d-flex text-muted mt-2 px-3 pb-3">
+  <div class="post-actions-wrapper">
+    <div class="post-actions">
       <div class="action me-4"><i class="bi bi-chat"></i> 12</div>
-      <div class="action me-4"><i class="bi bi-repeat"></i> 5</div>
-
+      <div class="action me-4">
+        <a href="{%url 'twitter_app:post_repost' post.id %}">
+            {% if post.is_repost_by_me %}
+                <i class="bi bi-repeat text-success"></i>
+            {% else %}
+                <i class="bi bi-repeat"></i>
+            {% endif %}
+        </a>
+            <span>{{ post.reposts.count }}</span>
+      </div>
+        
       <div class="action me-4 like-action">
           <form action="{% url 'twitter_app:post_like' post.id %}" method="POST">
               {% csrf_token %}
@@ -34,5 +63,5 @@
 
       <div class="action"><i class="bi bi-bar-chart"></i> 1500</div>
   </div>
-
+ </div>
 </div>

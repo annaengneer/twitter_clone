@@ -276,17 +276,6 @@ body {
     margin: 0 auto;
   }
 
-  .post-actions {
-    justify-content: center !important;
-  }
-
-.post-actions .action {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  color: #9ca3af;
-  font-size: 14px;
-}
 
 .like-btn {
   background: none;
@@ -317,6 +306,28 @@ body {
   color: #f787ea !important;
 }
 
+
+.post-actions-wrapper {
+  width: 100%;
+}
+
+.post-actions {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  gap: 36px;
+  padding: 8px 16px;
+
+}
+.post-actions .action {
+  display: flex;
+  align-items: center;
+  color: #9ca3af;
+  font-size: 14px;
+}
+
 .post-card-overlay {
   position: absolute;
   top: 0;
@@ -326,12 +337,55 @@ body {
   text-decoration: none;
   color: inherit;
   z-index: 1 !important;
+  pointer-events: auto;
 }
 
 .post-card-overlay:hover {
   opacity: 0.03;
 }
 
+.repost-banner {
+  font-size: 15px;
+  font-weight: 600;
+  color: #9ca3af;
+  margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.repost-original {
+  border: none !important;
+  padding: 0 !important;
+  margin-left: 2rem;
+  margin-right: 2rem;
+}
+
+.repost-original .post-user-icon {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.repost-original .post-display-name {
+  font-size: 1.4rem;
+  font-weight: bold;
+}
+
+.repost-original .post-username {
+  font-size: 1.2rem;
+  color: #aaa;
+  margin-left: 8px;
+}
+
+.repost-original p {
+  font-size: 1.5rem;
+  margin: 0 0 1rem 0;
+  color: #fff;
+  margin-left: 0;
+  margin-right: 0;
+}
   @media (max-width: 768px) {
     .sidebar {
       display: none;
