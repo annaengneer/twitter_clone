@@ -1,12 +1,13 @@
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.decorators import login_required
+from django.db.models import Exists, OuterRef
 from django.views.generic import CreateView
 from django.urls import reverse_lazy
 from .forms import SignUpForm, ProfileForm
 from django.shortcuts import render, redirect, get_object_or_404
 from .forms import PostForm, CommentForm
 from .models import Post,Profile
-from twitter_app.models import Post
+from twitter_app.models import Post, Like
 
 @login_required
 def top(request):
@@ -20,7 +21,10 @@ def top(request):
     else:
         form = PostForm()
 
-    posts = Post.objects.all().order_by('-id')
+    posts = (Post.objects.all().order_by('-id').annotate(
+        is_liked=Exists(Like.objects.filter(post=OuterRef('pk'), user=request.user))
+    ))
+
     return render(request, 'top_authenticated.html',{
         "form":form,
         "object_list":posts,
@@ -39,34 +43,12 @@ class SignupView(CreateView):
         login(self.request, user)
         return response
 
-@login_required  
-def ProfileView(request):
-    try:
-        profile = request.user.profile
-    except Profile.DoesNotExist:
-        profile = Profile.objects.create(user=request.user)
-
-    if request.method == 'POST':
-        form = ProfileForm(request.POST, request.FILES, instance=profile)
-        if form.is_valid():
-            form.save()
-            return redirect('profile')
-    else:
-        form = ProfileForm(instance=profile)
-
-    posts = Post.objects.filter(user=request.user).order_by('-created_at')
-
-    context = {
-        'profile': profile,
-        'form': form,
-        'posts': posts,
-    }
-    return render(request, 'profile.html', context)
-
 def profile_view(request, username):
     profile = get_object_or_404(Profile, user__username=username)
-    posts = Post.objects.filter(user=profile.user).order_by('-created_at')
-    
+    posts = (Post.objects.filter(user=profile.user).order_by('-created_at').annotate(
+        is_liked=Exists(Like.objects.filter(post=OuterRef('pk'), user=request.user))
+    ))
+
     context = {
         "profile": profile,
         "object_list": posts,
@@ -95,7 +77,12 @@ def profile_edit(request):
 
 @login_required
 def post_detail(request, post_id):
-    post = get_object_or_404(Post,id=post_id)
+    post = (
+        Post.objects.filter(id=post_id).annotate(is_liked=Exists(
+            Like.objects.filter(post=OuterRef('pk'), user=request.user))).first()
+    )
+    if post is None:
+        raise Http404()
 
     if request.method == "POST":
         form = CommentForm(request.POST)
@@ -114,3 +101,15 @@ def post_detail(request, post_id):
         "form": form,
         "comments": comments,
     })
+
+@login_required
+def post_like(request, post_id):
+    post = get_object_or_404(Post, id=post_id)
+    like, created = Like.objects.get_or_create(user=request.user, post=post)
+    
+    if not created:
+        like.delete()
+    
+    base_url = request.META.get('HTTP_REFERER', '/')
+
+    return redirect(f"{base_url}#post-{post.id}")

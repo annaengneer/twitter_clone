@@ -39,7 +39,7 @@
                     <div>
                         <div class="commet-header d-flex align-items-center">
                              <span class="comment-display-name">{{ comment.user.display_name }}</span>
-                             <span class="comment-username">{{ comment.user.username }}</span>
+                             <span class="comment-username">@{{ comment.user.username }}</span>
                              <span class="comment-time text-muted ms-2">
                                 {{ comment.created_at|timesince }}前
                              </span>
