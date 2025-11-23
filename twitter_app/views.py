@@ -23,11 +23,8 @@ def top(request):
 
     posts = (Post.objects.all().order_by('-id').annotate(
         is_liked=Exists(Like.objects.filter(post=OuterRef('pk'), user=request.user)),
-        is_repost_by_me=Exists(Post.objects.filter(user=request.user,repost_from=OuterRef("pk")))
+        is_repost=Exists(Post.objects.filter(user=request.user,repost_from=OuterRef("pk")))
     ))
-
-    for p in posts:
-        print(p.id, p.is_repost_by_me)
 
     return render(request, 'top_authenticated.html',{
         "form":form,

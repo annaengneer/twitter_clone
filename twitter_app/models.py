@@ -104,11 +104,10 @@ class Post(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now=True)
     updated_at = models.DateTimeField(auto_now=True)
-
     repost_from = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True, related_name='reposts')
     
     @property
-    def is_repost(self):
+    def is_repost_post(self):
         return self.repost_from is not None
 
     def __str__(self):
