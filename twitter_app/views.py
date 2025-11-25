@@ -48,7 +48,7 @@ def profile_view(request, username):
     profile = get_object_or_404(Profile, user__username=username)
     posts = (Post.objects.filter(user=profile.user).order_by('-created_at').annotate(
         is_liked=Exists(Like.objects.filter(post=OuterRef('pk'), user=request.user)),
-        is_repost_by_me=Exists(Post.objects.filter(user=request.user,repost_from=OuterRef("pk")))
+        is_repost=Exists(Post.objects.filter(user=request.user,repost_from=OuterRef("pk")))
     ))
 
     context = {
@@ -82,7 +82,7 @@ def post_detail(request, post_id):
     post = (
         Post.objects.filter(id=post_id).annotate(is_liked=Exists(
             Like.objects.filter(post=OuterRef('pk'), user=request.user)),
-            is_repost_by_me=Exists(Post.objects.filter(user=request.user, repost_from=OuterRef('pk'))
+            is_repost=Exists(Post.objects.filter(user=request.user, repost_from=OuterRef('pk'))
             )).first()
     )
     if post is None:
