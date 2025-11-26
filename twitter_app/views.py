@@ -7,7 +7,7 @@ from .forms import SignUpForm, ProfileForm
 from django.shortcuts import render, redirect, get_object_or_404
 from .forms import PostForm, CommentForm
 from .models import Post,Profile
-from twitter_app.models import Post, Like, Relation
+from twitter_app.models import Post, Like, Relation, Bookmark
 
 User=get_user_model()
 
@@ -26,8 +26,9 @@ def top(request):
     posts = (Post.objects.all().order_by('-id').annotate(
         is_liked=Exists(Like.objects.filter(post=OuterRef('pk'), user=request.user)),
         is_repost=Exists(Post.objects.filter(user=request.user,repost_from=OuterRef("pk"))),
-        is_following=Exists(Relation.objects.filter(followers=request.user,followings=OuterRef("user_id")))
-    ).select_related("user", "user__profile"))
+        is_following=Exists(Relation.objects.filter(followers=request.user,followings=OuterRef("user_id"))),
+        is_bookmarked=Exists(Bookmark.objects.filter(user=request.user, post=OuterRef('pk')))
+    ).order_by('-id').select_related("user", "user__profile"))
 
 
     return render(request, 'top_authenticated.html',{
@@ -145,3 +146,30 @@ def unfollow_user(request,username):
     user_to_unfollow = get_object_or_404(User, username=username)
     Relation.objects.filter(followers=request.user,followings=user_to_unfollow).delete()
     return redirect(request.META.get('HTTP_REFERER', 'twitter_app:top'))
+
+@login_required
+def bookmark(request, post_id):
+    post = get_object_or_404(Post, id=post_id)
+    bookmark,created = Bookmark.objects.get_or_create(
+    user=request.user,
+    post=post
+)
+    if not created:
+        bookmark.delete()
+    
+    return redirect(f"{request.META.get('HTTP_REFERER', '/')}#post-{post_id}")
+
+@login_required
+def bookmark_list(request):
+    posts = (
+        Post.objects.filter(bookmarked__user=request.user).order_by('id').annotate(
+            is_liked=Exists(Like.objects.filter(post=OuterRef('pk'), user=request.user)),
+        is_repost=Exists(Post.objects.filter(user=request.user,repost_from=OuterRef("pk"))),
+        is_following=Exists(Relation.objects.filter(followers=request.user,followings=OuterRef("user_id"))),
+        is_bookmarked=Exists(Bookmark.objects.filter(user=request.user, post=OuterRef('pk'))),
+        ).select_related('user', 'user__profile')
+    )
+
+    return render(request, "bookmark_list.html", {
+        "object_list": posts
+    })

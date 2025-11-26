@@ -165,3 +165,14 @@ class Profile(models.Model):
         username = str(getattr(self.user, "username", "不明ユーザー") or "不明ユーザー")
         display_name = str(getattr(self.user, "display_name", "") or "")
         return f"{display_name}{username}のプロフィール"
+
+class Bookmark(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='bookmarks')
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='bookmarked')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('user', 'post')
+
+    def __str__(self):
+        return f"{self.user.username} -> {self.post.id}"
