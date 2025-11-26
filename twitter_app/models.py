@@ -152,6 +152,14 @@ class Profile(models.Model):
     @property
     def display_name(self):
         return self.user.display_name
+    
+    @property
+    def following_count(self):
+        return Relation.objects.filter(followers=self.user).count()
+    
+    @property
+    def follower_count(self):
+        return Relation.objects.filter(followings=self.user).count()
 
     def __str__(self):
         username = str(getattr(self.user, "username", "不明ユーザー") or "不明ユーザー")

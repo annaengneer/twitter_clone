@@ -1,4 +1,4 @@
-from django.contrib.auth import login, authenticate
+from django.contrib.auth import login, authenticate, get_user_model
 from django.contrib.auth.decorators import login_required
 from django.db.models import Exists, OuterRef
 from django.views.generic import CreateView
@@ -7,7 +7,9 @@ from .forms import SignUpForm, ProfileForm
 from django.shortcuts import render, redirect, get_object_or_404
 from .forms import PostForm, CommentForm
 from .models import Post,Profile
-from twitter_app.models import Post, Like
+from twitter_app.models import Post, Like, Relation
+
+User=get_user_model()
 
 @login_required
 def top(request):
@@ -23,8 +25,10 @@ def top(request):
 
     posts = (Post.objects.all().order_by('-id').annotate(
         is_liked=Exists(Like.objects.filter(post=OuterRef('pk'), user=request.user)),
-        is_repost=Exists(Post.objects.filter(user=request.user,repost_from=OuterRef("pk")))
-    ))
+        is_repost=Exists(Post.objects.filter(user=request.user,repost_from=OuterRef("pk"))),
+        is_following=Exists(Relation.objects.filter(followers=request.user,followings=OuterRef("user_id")))
+    ).select_related("user", "user__profile"))
+
 
     return render(request, 'top_authenticated.html',{
         "form":form,
@@ -129,3 +133,15 @@ def post_repost(request, post_id):
     else:
         Post.objects.create(user=request.user,content="", repost_from=original_post)
     return redirect(f"{request.META.get('HTTP_REFERER', '/') }#post-{post_id}")
+
+@login_required
+def follow_user(request, username):
+    user_to_follow = get_object_or_404(User, username=username)
+    Relation.objects.get_or_create(followers=request.user,followings=user_to_follow)
+    return redirect(request.META.get('HTTP_REFERER', 'twitter_app:top'))
+
+@login_required
+def unfollow_user(request,username):
+    user_to_unfollow = get_object_or_404(User, username=username)
+    Relation.objects.filter(followers=request.user,followings=user_to_unfollow).delete()
+    return redirect(request.META.get('HTTP_REFERER', 'twitter_app:top'))

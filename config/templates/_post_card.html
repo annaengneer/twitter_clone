@@ -1,13 +1,27 @@
 <div class="card my-3 post-card" id="post-{{ post.id }}">
-  <div class="card-body post-card-body">
-      <a href="{% url 'twitter_app:post_detail' post.id %}" class="post-card-overlay"></a>
-
-      <div class="post-user-info d-flex align-items-center mb-2">
-          <img src="{{ post.user.profile.icon_image.url }}" class="post-user-icon me-2" alt="icon">
-          <span class="post-display-name">{{ post.user.display_name }}</span>
-          <span class="post-username">@{{ post.user.username }}</span>
-      </div>
-
+    <div class="card-body post-card-body">
+        
+        <div class="post-header d-flex justify-content-between align-items-start">
+        <div class="post-user-info d-flex align-items-center mb-2">
+            <img src="{{ post.user.profile.icon_image.url }}" class="post-user-icon me-2" alt="icon">
+            <span class="post-display-name">{{ post.user.display_name }}</span>
+            <span class="post-username">@{{ post.user.username }}</span>
+        </div>
+        <div class="post-menu-wrapper">
+          <i class="bi bi-three-dots post-menu-icon"></i>
+          <div class="post-menu">
+              {% if user.is_authenticated %}
+                  {% if request.user != post.user %}
+                      {% if post.is_following %}
+                          <a href="{% url 'twitter_app:unfollow' post.user.username %}" class="menu-item">{{ post.user.username }}さんのフォロー解除</a>
+                      {% else %}
+                          <a href="{% url 'twitter_app:follow' post.user.username %}" class="menu-item">@{{ post.user.username }}さんをフォロー</a>
+                      {% endif %}
+                  {% endif %}
+              {% endif %}
+          </div>
+        </div>
+     </div>
       {% if post.repost_from %}
         <div class="repost-banner">
             <i class="bi bi-repeat"></i>{{ post.user.display_name }}さんがリポスト
@@ -32,6 +46,8 @@
                     <img src="{{ post.image.url }}" alt="" class="img-fluid rounded mt-2" />
             {% endif %}
         {% endif %}
+        <a href="{% url 'twitter_app:post_detail' post.id %}" class="post-card-overlay"></a>
+
   </div>
   <div class="post-actions-wrapper">
     <div class="post-actions">

@@ -33,4 +33,20 @@
     {% block page_content %}{% endblock %}
   </main>
 </div>
+<script>
+  document.addEventListener("DOMContentLoaded", ()=> {
+    document.querySelectorAll(".post-menu-wrapper").forEach(wrapper => {
+      const icon =wrapper.querySelector(".post-menu-icon");
+      const menu = wrapper.querySelector(".post-menu");
+
+      icon.addEventListener("click",(e) => {
+        e.stopPropagation();
+        menu.style.display = menu.style.display ==="block" ? "none" : "block";
+      });
+      document.addEventListener("click", () => {
+        menu.style.display = "none";
+      });
+    });
+  });
+</script>
 {% endblock %}
