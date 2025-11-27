@@ -22,7 +22,8 @@ def top(request):
         form = PostForm()
 
     posts = (Post.objects.all().order_by('-id').annotate(
-        is_liked=Exists(Like.objects.filter(post=OuterRef('pk'), user=request.user))
+        is_liked=Exists(Like.objects.filter(post=OuterRef('pk'), user=request.user)),
+        is_repost=Exists(Post.objects.filter(user=request.user,repost_from=OuterRef("pk")))
     ))
 
     return render(request, 'top_authenticated.html',{
@@ -46,7 +47,8 @@ class SignupView(CreateView):
 def profile_view(request, username):
     profile = get_object_or_404(Profile, user__username=username)
     posts = (Post.objects.filter(user=profile.user).order_by('-created_at').annotate(
-        is_liked=Exists(Like.objects.filter(post=OuterRef('pk'), user=request.user))
+        is_liked=Exists(Like.objects.filter(post=OuterRef('pk'), user=request.user)),
+        is_repost=Exists(Post.objects.filter(user=request.user,repost_from=OuterRef("pk")))
     ))
 
     context = {
@@ -79,7 +81,9 @@ def profile_edit(request):
 def post_detail(request, post_id):
     post = (
         Post.objects.filter(id=post_id).annotate(is_liked=Exists(
-            Like.objects.filter(post=OuterRef('pk'), user=request.user))).first()
+            Like.objects.filter(post=OuterRef('pk'), user=request.user)),
+            is_repost=Exists(Post.objects.filter(user=request.user, repost_from=OuterRef('pk'))
+            )).first()
     )
     if post is None:
         raise Http404()
@@ -113,3 +117,15 @@ def post_like(request, post_id):
     base_url = request.META.get('HTTP_REFERER', '/')
 
     return redirect(f"{base_url}#post-{post.id}")
+
+@login_required
+def post_repost(request, post_id):
+    original_post = get_object_or_404(Post, id=post_id)
+
+    existing_repost = Post.objects.filter(user=request.user, repost_from=original_post).first()
+    
+    if existing_repost:
+        existing_repost.delete()
+    else:
+        Post.objects.create(user=request.user,content="", repost_from=original_post)
+    return redirect(f"{request.META.get('HTTP_REFERER', '/') }#post-{post_id}")
