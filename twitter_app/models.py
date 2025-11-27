@@ -176,3 +176,17 @@ class Bookmark(models.Model):
 
     def __str__(self):
         return f"{self.user.username} -> {self.post.id}"
+
+class Conversation(models.Model):
+    participants = models.ManyToManyField(User)
+    updated_at = models.DateTimeField(auto_now=True)
+
+class Message(models.Model):
+    conversation = models.ForeignKey(Conversation, on_delete=models.CASCADE, related_name='messages')
+    sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name="sent_messages")
+    text = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    is_read = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f'Message from {self.sender} in Conversation {self.conversation.id}'

@@ -1,0 +1,41 @@
+{% extends "base_layout.html" %}
+{% load static %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'css/dm.css' %}">
+<link rel="stylesheet" href="{% static 'css/layout.css' %}">
+{% endblock %}
+
+{% block title %} DM | {{ other_user.display_name }} {% endblock %}
+{% block page_content %}
+
+<div class="dm-header">
+    <img src="{{ other_user.profile.icon_image.url }}" class="dm-icon">
+    <p class="dm-name">{{ other_user.display_name }}</p>
+</div>
+
+<div class="dm-messages">
+    {% for msg in messages %}
+        {% if msg.sender == request.user %}
+            <div class="dm-msg-row dm-me-row">
+                <span class="dm-time">{{ msg.created_at|date:"H:i" }}</span>
+                <div class="dm-msg dm-msg-me">
+                    {{ msg.text }}
+                </div>
+            </div>
+        {% else %}
+            <div class="dm-msg-row dm-other-row">
+                <div class="dm-msg dm-msg-other">
+                    {{ msg.text }}
+                </div>
+                <span class="dm-time">{{ msg.created_at|date:"H:i" }}</span>
+            </div>
+        {% endif %}
+    {% endfor %}
+</div>
+<form method="POST" class="dm-form">
+    {% csrf_token %}
+    <input type="text" name="text" placeholder="メッセージを送信" required autocomplete="off">
+    <button type="submit"><i class="bi bi-send"></i></button>
+</form>
+{% endblock %}

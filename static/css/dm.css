@@ -1,0 +1,278 @@
+/* conversation_list.html */
+.header-dm {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 70px;
+  padding: 0 20px;
+  background-color: #333;
+  border-bottom: 1px solid #444;
+}
+
+.dm-page .header-dm {
+  width: 100% !important;
+  padding-left: 20px !important;
+  padding-right: 20px !important;
+
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+
+  background-color: #333 !important;
+  border-bottom: 1px solid #444 !important;
+}
+.dm-header-left,
+.dm-header-right {
+  display: flex;
+  align-items: center;
+}
+
+.dm-header-center {
+  flex: 1;
+  text-align: center;
+}
+
+.dm-header-right i {
+  font-size: 24px;
+}
+
+.dm-header-title {
+  font-size: 18px;
+  font-weight: bold;
+  color: #fff;
+}
+
+header.main-header form[action="/accounts/logout/"] {
+  display: none;
+}
+
+.conversation-new-container {
+  padding: 20px;
+  color: #fff;
+}
+
+.new-dm-user-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.dm-icon-large {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+}
+
+.dm-user-info-text .dm-user-name {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.dm-user-info-text .dm-username {
+  color: #9ca3af;
+  font-size: 14px;
+}
+
+.dm-separator {
+  border-color: #444;
+  margin: 20px 0;
+}
+
+.dm-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.dm-textarea {
+  width: 100%;
+  height: 120px;
+  background: #222;
+  border: 1px solid #444;
+  color: #fff;
+  border-radius: 8px;
+  padding: 12px;
+  resize: none;
+}
+
+.dm-send-btn {
+  align-self: flex-end;
+  padding: 6px 20px;
+}
+
+.dm-search-box {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 12px 16px;
+  padding: 10px 16px;
+  background-color: #202327;
+  border-radius: 9999px;
+}
+
+.dm-search-box i {
+  color: #71767b;
+  font-size: 16px;
+}
+
+.dm-search-input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  color: #e7e9ea;
+  font-size: 14px;
+}
+
+.dm-search-input::placeholder {
+  color: #71767b;
+}
+
+.dm-search-input:focus {
+  outline: none;
+}
+
+/* conversation_select.html */
+
+.dm-page .dm-title {
+  color: #fff;
+  font-size: 20px;
+  margin-bottom: 20px;
+  font-weight: 600;
+  padding-left: 10px;
+}
+
+.dm-list-container {
+  margin-top: 10px;
+  width: 100%;
+  max-width: 600px;
+}
+
+.dm-item {
+  display: flex;
+  align-items: center;
+  padding: 12px 16px;
+  border-bottom: 1px solid #444;
+  color: #fff;
+  text-decoration: none;
+  transition: background 0.2s ease;
+}
+
+.dm-item:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.dm-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  margin-right: 12px;
+}
+
+.dm-right {
+  display: flex;
+  flex-direction: column;
+}
+
+.dm-user-name {
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.dm-username {
+  color: #999;
+  font-size: 14px;
+}
+
+/* conversation_new.htm */
+.header-dm i {
+  color: #fff;
+  cursor: pointer;
+
+}
+
+.dm-header-right {
+  display: flex;
+  justify-content: center;
+  padding: 0 0 0 40rem;
+  align-items: center;
+  font-size: 24px;
+}
+
+.dm-header-center {
+  padding: 0 0 0 20rem;
+}
+
+.dm-header-left {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 24px;
+}
+
+.dm-messages {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.dm-msg-other {
+  align-self: flex-start;
+  max-width: 70%;
+  background: #2f2f2f;
+  padding: 10px;
+  border-radius: 12px;
+  display: inline-block;
+  border: 1px solid #555;
+}
+
+.dm-msg-me {
+  align-self: flex-end;
+  max-width: 70%;
+  background: #1d9bf0;
+  padding: 10px;
+  border-radius: 12px;
+  display: inline-block;
+  color: #fff;
+}
+
+.dm-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 12px 0 16px;
+}
+
+.dm-header .dm-name {
+  color: #fff;
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.dm-msg-row {
+  display: flex;
+  align-items: flex-end;
+  margin-bottom: 6px;
+}
+
+.dm-other-row {
+  justify-content: flex-start;
+}
+
+.dm-me-row {
+  justify-content: flex-end;
+}
+
+.dm-msg {
+  max-width: 70%;
+  padding: 10px;
+  border-radius: 12px;
+}
+
+.dm-time {
+  font-size: 11px;
+  color: #aaa;
+  margin-left: 6px;
+  margin-right: 6px;
+}

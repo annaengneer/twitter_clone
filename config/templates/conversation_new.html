@@ -1,0 +1,59 @@
+{% extends "base_layout.html" %}
+{% load static %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'css/dm.css' %}">
+<link rel="stylesheet" href="{% static 'css/layout.css' %}">
+{% endblock %}
+
+{% block header_title %}
+<div class="dm-page">
+    <div class="header-dm d-flex align-items-center justify-content-between w-100">
+        <div class="dm-header-left">
+            <a href="{% url 'twitter_app:top' %}">
+                <i class="bi bi-twitter-x x-icon"></i>
+            </a>
+        </div>
+        <div class="dm-header-center">
+            <span class="dm-header-title">新規メッセージ</span>
+        </div>
+        <div class="dm-header-right">
+            <a href="{% url 'twitter_app:conversation_list' %}">
+                <i class="bi bi-envelope"></i>
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+
+{% block page_content %}
+
+<div class="conversation-new-container">
+    <div class="dm-search-box">
+        <i class="bi bi-search"></i>
+    </div>
+    <div class="new-dm-user-info">
+        <img src="{{ other_user.profile.icon_image.url }}" class="dm-icon-large" alt="icon">
+
+        <div class="dm-user-info-text">
+            <span class="dm-user-name">{{ other_user.display_name }}</span>
+            <span class="dm-username">@{{ other_user.username }}</span>
+        </div>
+    </div>
+
+    <hr class="dm-separator">
+    <form method="POST" class="dm-form">
+        {% csrf_token %}
+        <textarea
+            name="text"
+            class="dm-textarea"
+            placeholder="メッセージを作成..."
+        ></textarea>
+        <button type="submit" class="btn btn-primary rounded-pill dm-send-btn">
+            送信
+        </button>
+    </form>
+</div>
+
+{% endblock %}

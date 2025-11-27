@@ -1,0 +1,60 @@
+{% extends "base_layout.html" %}
+{% load static %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'css/dm.css' %}">
+<link rel="stylesheet" href="{% static 'css/layout.css' %}">
+{% endblock %}
+
+{% block header_title %}
+<div class="header-dm">
+    <div class="dm-header-left">
+        <a href="{% url 'twitter_app:top' %}">
+            <i class="bi bi-twitter-x x-icon"></i>
+        </a>
+    </div>
+    <div class="dm-header-center">
+        <span class="dm-header-title">メッセージ</span>
+    </div>
+    <div class="dm-header-right">
+        <a href="{% url 'twitter_app:conversation_select' %}">
+            <i class="bi bi-envelope"></i>
+        </a>
+    </div>
+</div>
+{% endblock %}
+{% block page_content %}
+<div class="dm-search-box">
+  <i class="bi bi-search"></i>
+  <input type="text" class="dm-search-input" placeholder="ダイレクトメッセージを検索" disabled>
+</div>
+    <div class="dm-list-container">
+    {% for item in conversations %}
+      {% with conv=item.conversation other=item.other_user last=item.last_message %}
+      <a href="{% url 'twitter_app:conversation_detail' conv.id %}" class="dm-item">
+        <img src="{{ other.profile.icon_image.url }}" class="dm-icon" alt="icon">
+        <div class="dm-right">
+          <div class="dm-user-line">
+            <span class="dm-user-name">{{ other.display_name }}</span>
+            <span class="dm-username">@{{ other.username }}</span>
+          </div>
+          <div class="dm-last-msg">
+            {% if last %}
+              {{ last.text|truncatechars:30 }}
+            {% else %}
+              （メッセージなし）
+            {% endif %}
+          </div>
+          <div class="dm-updated">
+            {{ conv.updated_at|date:"Y/m/d H:i" }}
+          </div>
+        </div>
+      </a>
+
+    {% endwith %}
+  {% empty %}
+    <p class="dm-empty">まだメッセージはありません</p>
+  {% endfor %}
+</div>
+
+{% endblock page_content %}
