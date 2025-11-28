@@ -61,7 +61,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'allauth.socialaccount.providers.github',
     
-    'twitter_app',
+    'twitter_app.apps.TwitterAppConfig',
     'rest_framework',
     'rest_framework.authtoken'
 ]
