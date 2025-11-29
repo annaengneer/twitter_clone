@@ -19,4 +19,5 @@ urlpatterns = [
     path('dm/<int:conversation_id>/', views.conversation_detail, name='conversation_detail'),
     path('dm/start/<str:username>/', views.start_conversation, name='start_conversation'),
     path('dm/new/', views.conversation_select, name='conversation_select'),
+    path('notification/', views.notification_list, name='notification_list'),
 ]
