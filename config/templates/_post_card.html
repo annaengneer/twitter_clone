@@ -78,6 +78,15 @@
       </div>
 
       <div class="action"><i class="bi bi-bar-chart"></i> 1500</div>
+      <div class="action">
+        <a href="{% url 'twitter_app:bookmark' post.id %}">
+            {% if post.is_bookmarked %}
+                <i class="bi bi-bookmark-fill text-primary"></i>
+            {% else %}
+            <i class="bi bi-bookmark"></i>
+            {% endif %}
+        </a>
+    </div>
   </div>
  </div>
 </div>

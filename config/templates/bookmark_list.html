@@ -1,0 +1,22 @@
+{% extends "base_layout.html" %}
+{% load static %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'css/layout.css' %}">
+{% endblock %}
+
+{% block title %}ブックマーク一覧{% endblock %}
+
+{% block page_content %}
+
+<h2 class="page-title">ブックマーク一覧</h2>
+
+{% if object_list %}
+    {% for post in object_list %}
+        {% include "_post_card.html" %}
+    {% endfor %}
+{% else %}
+    <p style="color:#ccc; margin-top:20px;">まだブックマークはありません。</p>
+{% endif %}
+
+{% endblock %}

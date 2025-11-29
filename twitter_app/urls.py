@@ -13,4 +13,6 @@ urlpatterns = [
     path('post/<int:post_id>/repost', views.post_repost, name='post_repost'),
     path('follow/<str:username>/', views.follow_user, name='follow'),
     path('unfollow/<str:username>/', views.unfollow_user, name='unfollow'),
+    path('post/<int:post_id>/bookmark', views.bookmark, name='bookmark'),
+    path('bookmarks/', views.bookmark_list, name='bookmark_list'),
 ]

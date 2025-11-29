@@ -5,7 +5,7 @@
     <li><a class="item" href="#"><i class="bi bi-hash"></i>　話題を検索</a></li>
     <li><a class="item" href="#"><i class="bi bi-bell"></i>　通知</a></li>
     <li><a class="item" href="#"><i class="bi bi-envelope"></i>　メッセージ</a></li>
-    <li><a class="item" href="#"><i class="bi bi-bookmark"></i>　ブックマーク</a></li>
+    <li><a class="item" href="{% url 'twitter_app:bookmark_list' %}"><i class="bi bi-bookmark"></i>　ブックマーク</a></li>
     <li><a class="item" href="#"><i class="bi bi-twitter"></i>　Twitter Blue</a></li>
     <li><a class="item" href="{% url 'twitter_app:profile_detail' user.username %}"><i class="bi bi-person"></i>　プロフィール</a></li>
     <li><a class="item" href="#"><i class="bi bi-three-dots"></i>　もっとみる</a></li>
