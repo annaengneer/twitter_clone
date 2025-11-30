@@ -15,8 +15,8 @@ urlpatterns = [
     path('unfollow/<str:username>/', views.unfollow_user, name='unfollow'),
     path('post/<int:post_id>/bookmark', views.bookmark, name='bookmark'),
     path('bookmarks/', views.bookmark_list, name='bookmark_list'),
-    path('dm/', views.conversation_list, name='conversation_list'),
-    path('dm/<int:conversation_id>/', views.conversation_detail, name='conversation_detail'),
-    path('dm/start/<str:username>/', views.start_conversation, name='start_conversation'),
-    path('dm/new/', views.conversation_select, name='conversation_select'),
+    path('messages/', views.conversation_list, name='conversation_list'),
+    path('messages/<int:conversation_id>/', views.conversation_detail, name='conversation_detail'),
+    path('messages/start/<str:username>/', views.start_conversation, name='start_conversation'),
+    path('messages/new/', views.conversation_select, name='conversation_select'),
 ]
