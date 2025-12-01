@@ -1,6 +1,6 @@
 from django.contrib.auth import login, authenticate, get_user_model
 from django.contrib.auth.decorators import login_required
-from django.db.models import Exists, OuterRef,Q
+from django.db.models import Exists, OuterRef, Q, Prefetch
 from django.views.generic import CreateView
 from django.urls import reverse_lazy, reverse
 from .forms import SignUpForm, ProfileForm
@@ -221,7 +221,16 @@ def bookmark_list(request):
 @login_required
 def conversation_list(request):
     conversations_raw = (
-        Conversation.objects.filter(participants=request.user).order_by('-updated_at').prefetch_related('participants', 'messages')
+        Conversation.objects
+        .filter(participants=request.user)
+        .order_by('-updated_at')
+        .prefetch_related(
+            Prefetch(
+                'participants',
+                queryset=User.objects.select_related('profile')
+            ) ,
+            'messages'
+        )
     )
 
     conversations = []
@@ -262,14 +271,14 @@ def conversation_detail(request, conversation_id):
     if request.method == 'POST':
         text = request.POST.get('text')
         if text:
-            dm = Message.objects.create(
+            message = Message.objects.create(
                 conversation=conversation,
                 sender=request.user,
                 text=text
             )
 
             Conversation.objects.filter(id=conversation.id).update(
-                updated_at=dm.created_at
+                updated_at=message.created_at
             )
         return redirect('twitter_app:conversation_detail', conversation_id=conversation.id)
 
