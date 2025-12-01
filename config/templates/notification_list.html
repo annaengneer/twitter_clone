@@ -3,65 +3,7 @@
 
 {% block extra_head %}
 <link rel="stylesheet" href="{% static 'css/layout.css' %}">
-<link rel="stylesheet" href="{% static 'css/dm.css' %}">
-<style>
-/* ===== 通知ページ専用UI ===== */
-
-.notification-container {
-    padding: 20px;
-    color: #fff;
-}
-
-.notification-item {
-    display: flex;
-    align-items: flex-start;
-    gap: 12px;
-    padding: 14px 10px;
-    border-bottom: 1px solid #444;
-    text-decoration: none;
-    color: #fff;
-    transition: background 0.2s;
-}
-
-.notification-item:hover {
-    background: rgba(255, 255, 255, 0.05);
-}
-
-.notif-icon {
-    width: 48px;
-    height: 48px;
-    border-radius: 50%;
-}
-
-.notif-text {
-    display: flex;
-    flex-direction: column;
-}
-
-.notif-main {
-    font-size: 15px;
-    line-height: 1.4;
-}
-
-.notif-time {
-    color: #aaa;
-    margin-top: 6px;
-    font-size: 12px;
-}
-
-/* 種類ごとにアイコン色付け */
-.notif-type-like i {
-    color: #e0245e;
-}
-
-.notif-type-follow i {
-    color: #1d9bf0;
-}
-
-.notif-type-comment i {
-    color: #00ba7c;
-}
-</style>
+<link rel="stylesheet" href="{% static 'css/notification.css' %}">
 {% endblock %}
 
 {% block header_title %}
