@@ -1,13 +1,13 @@
 from django.contrib.auth import login, authenticate, get_user_model
 from django.contrib.auth.decorators import login_required
-from django.db.models import Exists, OuterRef
+from django.db.models import Exists, OuterRef, Q, Prefetch
 from django.views.generic import CreateView
 from django.urls import reverse_lazy
 from .forms import SignUpForm, ProfileForm
 from django.shortcuts import render, redirect, get_object_or_404
 from .forms import PostForm, CommentForm
 from .models import Post,Profile
-from twitter_app.models import Post, Like, Relation, Bookmark
+from twitter_app.models import Post, Like, Relation, Bookmark, Conversation, Message
 
 User=get_user_model()
 
@@ -172,4 +172,111 @@ def bookmark_list(request):
 
     return render(request, "bookmark_list.html", {
         "object_list": posts
+    })
+
+@login_required
+def conversation_list(request):
+    conversations_raw = (
+        Conversation.objects
+        .filter(participants=request.user)
+        .order_by('-updated_at')
+        .prefetch_related(
+            Prefetch(
+                'participants',
+                queryset=User.objects.select_related('profile')
+            ) ,
+            'messages'
+        )
+    )
+
+    conversations = []
+
+    for conv in conversations_raw:
+        other_user = conv.participants.exclude(id=request.user.id).first()
+
+        last_message = conv.messages.order_by('created_at').last()
+
+        conversations.append({
+            'conversation': conv,
+            'other_user':other_user,
+            'last_message': last_message,
+        })
+
+    return render(request, 'conversation_list.html',{
+        'conversations': conversations
+    })
+
+@login_required
+def conversation_select(request):
+    users = User.objects.all().select_related('profile')
+
+    return render(request, 'conversation_select.html',{
+        'users': users
+    })
+
+@login_required
+def conversation_detail(request, conversation_id):
+    conversation = get_object_or_404(
+        Conversation, id=conversation_id, participants=request.user
+    )
+
+    other_user = conversation.participants.exclude(id=request.user.id).first()
+
+    messages = conversation.messages.order_by('created_at')
+
+    if request.method == 'POST':
+        text = request.POST.get('text')
+        if text:
+            message = Message.objects.create(
+                conversation=conversation,
+                sender=request.user,
+                text=text
+            )
+
+            Conversation.objects.filter(id=conversation.id).update(
+                updated_at=message.created_at
+            )
+        return redirect('twitter_app:conversation_detail', conversation_id=conversation.id)
+
+    conversation.messages.filter(is_read=False).exclude(sender=request.user).update(is_read=True)
+
+    return render(request, 'conversation_detail.html', {
+        'conversation': conversation,
+        'messages': messages,
+        'other_user': other_user
+    })
+
+@login_required
+def start_conversation(request, username):
+    other_user =get_object_or_404(User, username=username)
+
+    if not other_user or other_user == request.user:
+        return redirect('twitter_app:top')
+
+    conversation=(
+    Conversation.objects
+    .filter(participants=request.user)
+    .filter(participants=other_user)
+    .first()
+    )
+    if request.method == 'POST':
+        text = request.POST.get('text')
+        if not conversation:
+            conversation = Conversation.objects.create()
+            conversation.participants.add(request.user, other_user)
+
+        if text:
+            dm = Message.objects.create (
+                conversation=conversation,
+                sender=request.user,
+                text=text,
+            )
+            Conversation.objects.filter(id=conversation.id).update(
+                updated_at=dm.created_at
+            )
+        return redirect('twitter_app:conversation_detail', conversation.id)
+
+    return render(request, 'conversation_new.html',{
+        'other_user': other_user,
+        'conversation': conversation,
     })

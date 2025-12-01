@@ -1,0 +1,44 @@
+{% extends "base_layout.html" %}
+{% load static %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'css/dm.css' %}">
+<link rel="stylesheet" href="{% static 'css/layout.css' %}">
+{% endblock %}
+
+{% block header_title %}
+<div class="header-dm">
+    <div class="dm-header-left">
+        <a href="{% url 'twitter_app:conversation_list' %}">
+            <i class="bi bi-arrow-left"></i>
+        </a>
+    </div>
+
+    <div class="dm-header-center">
+        <span class="dm-header-title">新しいメッセージ</span>
+    </div>
+
+    <div class="dm-header-right"></div>
+</div>
+{% endblock %}
+
+{% block page_content %}
+
+<h2 class="dm-title">ユーザーを選択</h2>
+
+<div class="dm-list-container">
+    {% for user in users %}
+        {% if user != request.user %}
+        <a href="{% url 'twitter_app:start_conversation' user.username %}" class="dm-item">
+            <img src="{{ user.profile.icon_image.url }}" class="dm-icon" alt="icon">
+
+            <div class="dm-right">
+                <span class="dm-user-name">{{ user.display_name }}</span>
+                <span class="dm-username">@{{ user.username }}</span>
+            </div>
+        </a>
+        {% endif %}
+    {% endfor %}
+</div>
+
+{% endblock %}
