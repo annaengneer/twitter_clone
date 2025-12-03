@@ -1,0 +1,82 @@
+{% extends "base_layout.html" %}
+{% load static %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'css/layout.css' %}">
+<link rel="stylesheet" href="{% static 'css/notification.css' %}">
+{% endblock %}
+
+{% block header_title %}
+<div class="header-dm d-flex align-items-center justify-content-between w-100">
+    <div class="dm-header-left">
+        <a href="{% url 'twitter_app:top' %}">
+            <i class="bi bi-arrow-left"></i>
+        </a>
+    </div>
+    <div class="dm-header-center">
+        <span class="dm-header-title">通知</span>
+    </div>
+    <div class="dm-header-right"></div>
+</div>
+{% endblock %}
+
+{% block page_content %}
+
+<div class="notification-container">
+
+    {% if notifications %}
+        {% for n in notifications %}
+        <a href="
+            {% if n.post %}
+                {% url 'twitter_app:post_detail' n.post.id %}
+            {% else %}
+                #
+            {% endif %}
+        " class="notification-item">
+
+            <!-- アイコン -->
+            <img src="{{ n.from_user.profile.icon_image.url }}" class="notif-icon" alt="icon">
+
+            <div class="notif-text">
+
+                <!-- 通知内容 -->
+                <div class="notif-main">
+
+                    {% if n.notification_type == 'like' %}
+                        <span class="notif-type-like">
+                            <i class="bi bi-heart-fill"></i>
+                        </span>
+                        {{ n.from_user.display_name }} さんがあなたの投稿にいいねしました。
+
+                    {% elif n.notification_type == 'follow' %}
+                        <span class="notif-type-follow">
+                            <i class="bi bi-person-plus-fill"></i>
+                        </span>
+                        {{ n.from_user.display_name }} さんがあなたをフォローしました。
+
+                    {% elif n.notification_type == 'comment' %}
+                        <span class="notif-type-comment">
+                            <i class="bi bi-chat-dots-fill"></i>
+                        </span>
+                        {{ n.from_user.display_name }} さんがコメントしました：
+                        「{{ n.comment.content|truncatechars:20 }}」
+
+                    {% endif %}
+                </div>
+
+                <!-- 日時 -->
+                <span class="notif-time">
+                    {{ n.created_at|date:"Y/m/d H:i" }}
+                </span>
+
+            </div>
+
+        </a>
+        {% endfor %}
+    {% else %}
+        <p class="dm-empty">通知はまだありません</p>
+    {% endif %}
+
+</div>
+
+{% endblock %}

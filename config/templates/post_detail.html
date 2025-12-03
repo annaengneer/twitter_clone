@@ -35,9 +35,9 @@
             <div class="comment-item mb-4">
                 <div class="d-flex align-items-start">
                     <img src="{{ comment.user.profile.icon_image.url }}" class="comment-icon me-2" alt="icon">
-
-                    <div>
-                        <div class="commet-header d-flex align-items-center">
+                  <div class="comment-right">
+                    <div class="comment-inner">
+                        <div class="commet-header">
                              <span class="comment-display-name">{{ comment.user.display_name }}</span>
                              <span class="comment-username">@{{ comment.user.username }}</span>
                              <span class="comment-time text-muted ms-2">
@@ -77,8 +77,11 @@
                         </div>
                             <div class="action"><i class="bi bi-bar-chart"></i> 1500</div>
                         </div>
-                    </div>
+                      </div>
+                     </div>
+                  </div>
                 </div>
+              </div>
             </div>
         {% empty %}
             <p class="text-muted">まだコメントはありません。</p>

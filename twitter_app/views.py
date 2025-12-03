@@ -2,12 +2,13 @@ from django.contrib.auth import login, authenticate, get_user_model
 from django.contrib.auth.decorators import login_required
 from django.db.models import Exists, OuterRef, Q, Prefetch
 from django.views.generic import CreateView
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from .forms import SignUpForm, ProfileForm
 from django.shortcuts import render, redirect, get_object_or_404
 from .forms import PostForm, CommentForm
 from .models import Post,Profile
-from twitter_app.models import Post, Like, Relation, Bookmark, Conversation, Message
+from twitter_app.models import Post, Like, Relation, Bookmark, Conversation, Message,Notification
+from twitter_app.utils import send_notification_email
 
 User=get_user_model()
 
@@ -100,10 +101,29 @@ def post_detail(request, post_id):
             new_comment.post = post
             new_comment.user = request.user
             new_comment.save()
+            if post.user != request.user:
+                Notification.objects.create(
+                    to_user=post.user,
+                    from_user=request.user,
+                    post=post,
+                    comment=new_comment,
+                    notification_type=Notification.COMMENT,
+                )
+
+                send_notification_email(
+                    to_user=post.user,
+                    from_user=request.user,
+                    notification_type="comment",
+                    extra_text=new_comment.content
+                )
             return redirect('twitter_app:post_detail', post_id=post.id)
     else:
         form = CommentForm()
-    comments = post.comments.order_by('-created_at')
+        comments = (
+        post.comments
+        .select_related("user", "user__profile")
+        .order_by('-created_at')
+    )
 
     return render(request, 'post_detail.html',{
         "post": post,
@@ -118,6 +138,20 @@ def post_like(request, post_id):
     
     if not created:
         like.delete()
+    else:
+        if post.user != request.user:
+            Notification.objects.create(
+                to_user=post.user,
+                from_user=request.user,
+                post=post,
+                notification_type=Notification.LIKE
+            )
+
+            send_notification_email(
+                to_user=post.user,
+                from_user=request.user,
+                notification_type='like'
+            )
     
     base_url = request.META.get('HTTP_REFERER', '/')
 
@@ -138,8 +172,22 @@ def post_repost(request, post_id):
 @login_required
 def follow_user(request, username):
     user_to_follow = get_object_or_404(User, username=username)
-    Relation.objects.get_or_create(followers=request.user,followings=user_to_follow)
-    return redirect(request.META.get('HTTP_REFERER', 'twitter_app:top'))
+    relation, created = Relation.objects.get_or_create(followers=request.user,followings=user_to_follow)
+
+    if created and user_to_follow !=request.user:
+        Notification.objects.create(
+            to_user=user_to_follow,
+            from_user=request.user,
+            notification_type=Notification.FOLLOW,
+        )
+
+        send_notification_email(
+            to_user=user_to_follow,
+            from_user=request.user,
+            notification_type='follow'
+        )
+
+    return redirect(request.META.get('HTTP_REFERER') or reverse('twitter_app:top'))
 
 @login_required
 def unfollow_user(request,username):
@@ -163,7 +211,7 @@ def bookmark(request, post_id):
 def bookmark_list(request):
     posts = (
         Post.objects.filter(bookmarked__user=request.user).order_by('id').annotate(
-            is_liked=Exists(Like.objects.filter(post=OuterRef('pk'), user=request.user)),
+        is_liked=Exists(Like.objects.filter(post=OuterRef('pk'), user=request.user)),
         is_repost=Exists(Post.objects.filter(user=request.user,repost_from=OuterRef("pk"))),
         is_following=Exists(Relation.objects.filter(followers=request.user,followings=OuterRef("user_id"))),
         is_bookmarked=Exists(Bookmark.objects.filter(user=request.user, post=OuterRef('pk'))),
@@ -279,4 +327,16 @@ def start_conversation(request, username):
     return render(request, 'conversation_new.html',{
         'other_user': other_user,
         'conversation': conversation,
+    })
+
+@login_required
+def notification_list(request):
+    notifications =(
+        request.user.notifications
+        .select_related('from_user', 'post', 'comment')
+        .order_by('-created_at')
+    )
+    notifications.filter(is_read=False).update(is_read=True)
+    return render(request, 'notification_list.html',{
+        'notifications': notifications
     })

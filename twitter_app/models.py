@@ -2,6 +2,7 @@ from django.db import models
 from django.core.validators import RegexValidator
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.contrib.auth import get_user_model
+from django.conf import settings
 from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
 from django.db import models
@@ -190,3 +191,25 @@ class Message(models.Model):
 
     def __str__(self):
         return f'Message from {self.sender} in Conversation {self.conversation.id}'
+
+class Notification(models.Model):
+    LIKE = 'like'
+    FOLLOW = 'follow'
+    COMMENT = 'comment'
+
+    NOTIFICATION_TYPE_CHOICES = [
+        (LIKE, 'Like'),
+        (FOLLOW, 'Follow'),
+        (COMMENT, 'Comment'),
+    ]
+
+    to_user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='notifications', on_delete=models.CASCADE)
+    from_user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='sent_notifications', on_delete=models.CASCADE, null=True, blank=True)
+    post = models.ForeignKey('Post', on_delete=models.CASCADE, null=True, blank=True)
+    notification_type = models.CharField(max_length=20, choices=NOTIFICATION_TYPE_CHOICES)
+    comment = models.ForeignKey("Comment", on_delete=models.CASCADE, null=True, blank=True)
+    is_read = models.BooleanField(default=False)
+    created_at = models.DateTimeField(default=timezone.now)
+
+    def __str__(self):
+        return f"{self.from_user} → {self.to_user} ({self.notification_type})"
