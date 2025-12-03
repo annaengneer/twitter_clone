@@ -119,7 +119,7 @@ def post_detail(request, post_id):
             return redirect('twitter_app:post_detail', post_id=post.id)
     else:
         form = CommentForm()
-        comments = comments = (
+        comments = (
         post.comments
         .select_related("user", "user__profile")
         .order_by('-created_at')
