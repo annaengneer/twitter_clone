@@ -44,12 +44,16 @@ ALLOWED_HOSTS = [
     # --- old deploy ---
     "still-reaches-06925-c85c2689c92d.herokuapp.com",
      # --- production (Render) ---
-    "twitter-clone.onrender.com"]
+    "django-twitter-clone-te18.onrender.com"]
 MEDIA_URL = '/media/'
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 CSRF_TRUSTED_ORIGINS = env.list("CSRF_TRUSTED_ORIGINS", default=[
-    "https://still-reaches-06925.herokuapp.com","https://still-reaches-06925-c85c2689c92d.herokuapp.com","https://twitter-clone.onrender.com"
+    "https://django-twitter-clone-te18.onrender.com",
+
+    # old deploy (Heroku)
+    # "https://still-reaches-06925.herokuapp.com",
+    # "https://still-reaches-06925-c85c2689c92d.herokuapp.com",
 ])
 ACCOUNT_DEFAULT_HTTP_PROTOCOL = os.environ.get("DEFAULT_HTTP_PROTOCOL", "http")
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
