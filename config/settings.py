@@ -34,6 +34,7 @@ if not DEBUG:
     SECURE_HSTS_SECONDS = 3600
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
+    WHITENOISE_USE_FINDERS = True
 
 ALLOWED_HOSTS = [
     # --- local dev ---
@@ -178,8 +179,13 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / "staticfiles"
 STATICFILES_DIRS = [
-    BASE_DIR / "static",
-    ]
+    str(BASE_DIR / "static"),
+]
+STATICFILES_FINDERS = [
+    "django.contrib.staticfiles.finders.FileSystemFinder",
+    "django.contrib.staticfiles.finders.AppDirectoriesFinder",
+]
+
 if DEBUG:
     STATICFILES_STORAGE = "django.contrib.staticfiles.storage.StaticFilesStorage"
 else:
