@@ -13,7 +13,11 @@
     <li>
     <div class="user_information">
         <div class="user-icon">
-            <img src="{{ user.profile.icon_image.url }}" alt="プロフィール画像">
+            {% if user.profile.icon_image %}
+                <img src="{{ user.profile.icon_image.url }}" alt="プロフィール画像">
+            {% else %}
+                <img src="https://res.cloudinary.com/dayz5tvip/image/upload/v1771568309/default_rjynmt.png" alt="プロフィール画像">
+            {% endif %}
         </div>
         <div class="user_name">
             <p class='top_name'>{{ user.display_name}}</p>

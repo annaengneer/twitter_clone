@@ -1,92 +1,107 @@
-{% extends "base_layout.html" %}
-{% load static %}
+{% extends "base_layout.html" %} 
+{% load static %} 
 {% block extra_head %}
-<link rel="stylesheet" href="{% static 'css/layout.css' %}?v=9999">
-<link rel="stylesheet" href="{% static 'css/post_detail.css' %}?v=9999">
+<link rel="stylesheet" href="{% static 'css/layout.css' %}?v=9999" />
+<link rel="stylesheet" href="{% static 'css/post_detail.css' %}?v=9999" />
 {% endblock extra_head %} 
-{% block title %} 投稿詳細 {% endblock %}
+{% block title %} 
+投稿詳細 
+{% endblock %} 
 {% block header_title %}
 <div class="detail-header">
-    <div class="detail-right">
-        <i class="bi bi-twitter-x x-icon"></i>
-    </div>
-    <div class="detail-left">
-        <i class="bi bi-arrow-left back-btn"></i>
-    </div>
-    <div class="detail-center">
-        <span class="detail-header-title">ポスト</span>
-    </div>
+  <div class="detail-right">
+    <i class="bi bi-twitter-x x-icon"></i>
+  </div>
+  <div class="detail-left">
+    <i class="bi bi-arrow-left back-btn"></i>
+  </div>
+  <div class="detail-center">
+    <span class="detail-header-title">ポスト</span>
+  </div>
 </div>
-{% endblock %}
-
- {% block page_content %}
-      <div class="cp_tabpanels">
-        <div id="tweet_panel" class="cp_tabpanel">
-          {% include "_post_card.html" with post=post %}
-        </div>
-      </div>
-      <form method="POST">
-        {% csrf_token %}
-        {{ form.content }}
-        <button type="submit" class="btn btn-primary mt-2 rounded-pill comment-btn">返信する</button>
-      </form>
-      <div class="comment-list mt-4">
-        {% for comment in comments %}
-            <div class="comment-item mb-4">
-                <div class="d-flex align-items-start">
-                    <img src="{{ comment.user.profile.icon_image.url }}" class="comment-icon me-2" alt="icon">
-                  <div class="comment-right">
-                    <div class="comment-inner">
-                        <div class="commet-header">
-                             <span class="comment-display-name">{{ comment.user.display_name }}</span>
-                             <span class="comment-username">@{{ comment.user.username }}</span>
-                             <span class="comment-time text-muted ms-2">
-                                {{ comment.created_at|timesince }}前
-                             </span>
-                        </div>
-                            <span class="text-muted">
-                                返信先:@{{ post.user.username }}
-                            </span>
-                            <p class="comment-content mt-1">{{ comment.content }}</p>
-                        <div class="comment-actions d-flex text-muted mt-2">
-                            <div class="post-actions-wrapper">
-                            <div class="post-actions">
-                                <div class="action me-4"><i class="bi bi-chat"></i> 12</div>
-                                <div class="action me-4">
-                                <a href="{%url 'twitter_app:post_repost' post.id %}">
-                                    {% if post.is_repost %}
-                                        <i class="bi bi-repeat text-success"></i>
-                                    {% else %}
-                                        <i class="bi bi-repeat"></i>
-                                    {% endif %}
-                                </a>
-                                    <span>{{ post.reposts.count }}</span>
-                                </div>
-                        <div class="action me-4 like-action">
-                            <form action="{% url 'twitter_app:post_like' post.id %}" method="POST">
-                                {% csrf_token %}
-                                <button type="submit" class="like-btn">
-                                    {% if post.is_liked %}
-                                        <i class="bi bi-heart-fill liked"></i>
-                                    {% else %}
-                                        <i class="bi bi-heart"></i>
-                                    {% endif %}
-                                    <span>{{ post.likes.count }}</span>
-                                </button>
-                            </form>
-                        </div>
-                            <div class="action"><i class="bi bi-bar-chart"></i> 1500</div>
-                        </div>
-                      </div>
-                     </div>
-                  </div>
+{% endblock %} {% block page_content %}
+<div class="cp_tabpanels">
+  <div id="tweet_panel" class="cp_tabpanel">
+    {% include "_post_card.html" with post=post %}
+  </div>
+</div>
+<form method="POST">
+  {% csrf_token %} {{ form.content }}
+  <button type="submit" class="btn btn-primary mt-2 rounded-pill comment-btn">
+    返信する
+  </button>
+</form>
+<div class="comment-list mt-4">
+  {% for comment in comments %}
+  <div class="comment-item mb-4">
+    <div class="d-flex align-items-start">
+      {% if comment.user.profile.icon_image %}
+      <img
+        src="{{ comment.user.profile.icon_image.url }}"
+        class="comment-icon me-2"
+        alt="icon"
+      />
+      {% else %}
+      <img
+        src="https://res.cloudinary.com/dayz5tvip/image/upload/default_rjynmt.png"
+        class="comment-icon me-2"
+        alt="icon"
+      />
+      {% endif %}
+      <div class="comment-right">
+        <div class="comment-inner">
+          <div class="commet-header">
+            <span class="comment-display-name"
+              >{{ comment.user.display_name }}</span
+            >
+            <span class="comment-username">@{{ comment.user.username }}</span>
+            <span class="comment-time text-muted ms-2">
+              {{ comment.created_at|timesince }}前
+            </span>
+          </div>
+          <span class="text-muted"> 返信先:@{{ post.user.username }} </span>
+          <p class="comment-content mt-1">{{ comment.content }}</p>
+          <div class="comment-actions d-flex text-muted mt-2">
+            <div class="post-actions-wrapper">
+              <div class="post-actions">
+                <div class="action me-4"><i class="bi bi-chat"></i> 12</div>
+                <div class="action me-4">
+                  <a href="{%url 'twitter_app:post_repost' post.id %}">
+                    {% if post.is_repost %}
+                    <i class="bi bi-repeat text-success"></i>
+                    {% else %}
+                    <i class="bi bi-repeat"></i>
+                    {% endif %}
+                  </a>
+                  <span>{{ post.reposts.count }}</span>
                 </div>
+                <div class="action me-4 like-action">
+                  <form
+                    action="{% url 'twitter_app:post_like' post.id %}"
+                    method="POST"
+                  >
+                    {% csrf_token %}
+                    <button type="submit" class="like-btn">
+                      {% if post.is_liked %}
+                      <i class="bi bi-heart-fill liked"></i>
+                      {% else %}
+                      <i class="bi bi-heart"></i>
+                      {% endif %}
+                      <span>{{ post.likes.count }}</span>
+                    </button>
+                  </form>
+                </div>
+                <div class="action"><i class="bi bi-bar-chart"></i> 1500</div>
               </div>
             </div>
-        {% empty %}
-            <p class="text-muted">まだコメントはありません。</p>
-        {% endfor %}
+          </div>
+        </div>
       </div>
+    </div>
+  </div>
+  {% empty %}
+  <p class="text-muted">まだコメントはありません。</p>
+  {% endfor %}
+</div>
 
 {% endblock page_content %}
-

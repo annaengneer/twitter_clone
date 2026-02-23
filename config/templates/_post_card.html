@@ -1,95 +1,133 @@
 <div class="card my-3 post-card" id="post-{{ post.id }}">
-    <div class="card-body post-card-body">
-        
-        <div class="post-header d-flex justify-content-between align-items-start">
-        <div class="post-user-info d-flex align-items-center mb-2">
-            <img src="{{ post.user.profile.icon_image.url }}" class="post-user-icon me-2" alt="icon">
-            <span class="post-display-name">{{ post.user.display_name }}</span>
-            <span class="post-username">@{{ post.user.username }}</span>
-        </div>
-        <div class="post-menu-wrapper">
-            <i class="bi bi-three-dots post-menu-icon"></i>
-            <div class="post-menu">
-                {% if user.is_authenticated %}
-                    {% if request.user != post.user %}
-                        {% if post.is_following %}
-                            <a href="{% url 'twitter_app:unfollow' post.user.username %}" class="menu-item">@{{ post.user.username }}さんのフォロー解除</a>
-                        {% else %}
-                            <a href="{% url 'twitter_app:follow' post.user.username %}" class="menu-item">@{{ post.user.username }}さんをフォロー</a>
-                        {% endif %}
-                            <a href="{% url 'twitter_app:conversation_select' %}" class="menu-item">
-                                @{{ post.user.username }}さんにメッセージを送信
-                            </a>
-                    {% endif %}
-                {% endif %}
-            </div>
-          </div>
-       </div>
-      {% if post.repost_from %}
-        <div class="repost-banner">
-            <i class="bi bi-repeat"></i>{{ post.user.display_name }}さんがリポスト
-        </div>
-
-        <div class="repost-original card mt-2 p-2">
-            <div class="d-flex align-items-center mb-2">
-                <img src="{{ post.repost_from.user.profile.icon_image.url }}" class="post-user-icon me-2" alt="icon">
-                <span class="post-display-name">{{ post.repost_from.user.display_name }}</span>
-                <span class="post-username">@{{ post.repost_from.user.username}}</span>
-            </div>
-             <p>{{ post.repost_from.content }}</p>
-
-             {% if post.repost_from.image %}
-                <img src="{{ post.repost_from.image.url }}" class="img-fluid rounded mt-2">
-            {% endif %}
-        </div>
+  <div class="card-body post-card-body">
+    <div class="post-header d-flex justify-content-between align-items-start">
+      <div class="post-user-info d-flex align-items-center mb-2">
+        {% if post.user.profile.icon_image %}
+        <img
+          src="{{ post.user.profile.icon_image.url }}"
+          class="post-user-icon me-2"
+          alt="icon"
+        />
         {% else %}
-            <p>{{ post.content }}</p>
-
-            {% if post.image %}
-                    <img src="{{ post.image.url }}" alt="" class="img-fluid rounded mt-2" />
-            {% endif %}
+        <img
+          src="https://res.cloudinary.com/dayz5tvip/image/upload/v171568309/default_rjynmt.png"
+          class="post-user-icon me-2"
+          alt="icon"
+        />
         {% endif %}
-        <a href="{% url 'twitter_app:post_detail' post.id %}" class="post-card-overlay"></a>
+        <span class="post-display-name">{{ post.user.display_name }}</span>
+        <span class="post-username">@{{ post.user.username }}</span>
+      </div>
+      <div class="post-menu-wrapper">
+        <i class="bi bi-three-dots post-menu-icon"></i>
+        <div class="post-menu">
+          {% if user.is_authenticated %} {% if request.user != post.user %} {%
+          if post.is_following %}
+          <a
+            href="{% url 'twitter_app:unfollow' post.user.username %}"
+            class="menu-item"
+            >@{{ post.user.username }}さんのフォロー解除</a
+          >
+          {% else %}
+          <a
+            href="{% url 'twitter_app:follow' post.user.username %}"
+            class="menu-item"
+            >@{{ post.user.username }}さんをフォロー</a
+          >
+          {% endif %}
+          <a
+            href="{% url 'twitter_app:conversation_select' %}"
+            class="menu-item"
+          >
+            @{{ post.user.username }}さんにメッセージを送信
+          </a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+    {% if post.repost_from %}
+    <div class="repost-banner">
+      <i class="bi bi-repeat"></i>{{ post.user.display_name }}さんがリポスト
+    </div>
 
+    <div class="repost-original card mt-2 p-2">
+      <div class="d-flex align-items-center mb-2">
+        {% if post.repost_from.user.profile.icon_image %}
+        <img
+          src="{{ post.repost_from.user.profile.icon_image.url }}"
+          class="post-user-icon me-2"
+          alt="icon"
+        />
+        {% else %}
+        <img
+          src="https://res.cloudinary.com/dayz5tvip/image/upload/v171568309/default_rjynmt.png"
+          class="post-user-icon me-2"
+          alt="icon"
+        />
+        {% endif %}
+        <span class="post-display-name"
+          >{{ post.repost_from.user.display_name }}</span
+        >
+        <span class="post-username">@{{ post.repost_from.user.username}}</span>
+      </div>
+      <p>{{ post.repost_from.content }}</p>
+
+      {% if post.repost_from.image %}
+      <img
+        src="{{ post.repost_from.image.url }}"
+        class="img-fluid rounded mt-2"
+      />
+      {% endif %}
+    </div>
+    {% else %}
+    <p>{{ post.content }}</p>
+
+    {% if post.image %}
+    <img src="{{ post.image.url }}" alt="" class="img-fluid rounded mt-2" />
+    {% endif %} {% endif %}
+    <a
+      href="{% url 'twitter_app:post_detail' post.id %}"
+      class="post-card-overlay"
+    ></a>
   </div>
   <div class="post-actions-wrapper">
     <div class="post-actions">
       <div class="action me-4"><i class="bi bi-chat"></i> 12</div>
       <div class="action me-4">
         <a href="{%url 'twitter_app:post_repost' post.id %}">
-            {% if post.is_repost %}
-                <i class="bi bi-repeat text-success"></i>
-            {% else %}
-                <i class="bi bi-repeat"></i>
-            {% endif %}
+          {% if post.is_repost %}
+          <i class="bi bi-repeat text-success"></i>
+          {% else %}
+          <i class="bi bi-repeat"></i>
+          {% endif %}
         </a>
-            <span>{{ post.reposts.count }}</span>
+        <span>{{ post.reposts.count }}</span>
       </div>
-        
+
       <div class="action me-4 like-action">
-          <form action="{% url 'twitter_app:post_like' post.id %}" method="POST">
-              {% csrf_token %}
-              <button type="submit" class="like-btn">
-                  {% if post.is_liked %}
-                      <i class="bi bi-heart-fill liked"></i>
-                  {% else %}
-                      <i class="bi bi-heart"></i>
-                  {% endif %}
-                  <span>{{ post.likes.count }}</span>
-              </button>
-          </form>
+        <form action="{% url 'twitter_app:post_like' post.id %}" method="POST">
+          {% csrf_token %}
+          <button type="submit" class="like-btn">
+            {% if post.is_liked %}
+            <i class="bi bi-heart-fill liked"></i>
+            {% else %}
+            <i class="bi bi-heart"></i>
+            {% endif %}
+            <span>{{ post.likes.count }}</span>
+          </button>
+        </form>
       </div>
 
       <div class="action"><i class="bi bi-bar-chart"></i> 1500</div>
       <div class="action">
         <a href="{% url 'twitter_app:bookmark' post.id %}">
-            {% if post.is_bookmarked %}
-                <i class="bi bi-bookmark-fill text-primary"></i>
-            {% else %}
-            <i class="bi bi-bookmark"></i>
-            {% endif %}
+          {% if post.is_bookmarked %}
+          <i class="bi bi-bookmark-fill text-primary"></i>
+          {% else %}
+          <i class="bi bi-bookmark"></i>
+          {% endif %}
         </a>
+      </div>
     </div>
   </div>
- </div>
 </div>

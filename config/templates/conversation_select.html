@@ -29,8 +29,12 @@
 <div class="dm-list-container">
     {% for user in users %}
         {% if user != request.user %}
-        <a href="{% url 'twitter_app:start_conversation' user.username %}" class="dm-item">
-            <img src="{{ user.profile.icon_image.url }}" class="dm-icon" alt="icon">
+                <a href="{% url 'twitter_app:start_conversation' user.username %}" class="dm-item">
+            {% if user.profile.icon_image %}
+                <img src="{{ user.profile.icon_image.url }}" class="dm-icon" alt="icon">
+            {% else %}
+                <img src="https://res.cloudinary.com/dayz5tvip/image/upload/v1771568309/default_rjynmt.png" class="dm-icon" alt="icon">
+            {% endif %}
 
             <div class="dm-right">
                 <span class="dm-user-name">{{ user.display_name }}</span>

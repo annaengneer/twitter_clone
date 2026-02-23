@@ -10,7 +10,11 @@
 {% block page_content %}
 
 <div class="dm-header">
-    <img src="{{ other_user.profile.icon_image.url }}" class="dm-icon">
+    {% if other_user.profile.icon_image %}
+        <img src="{{ other_user.profile.icon_image.url }}" class="dm-icon">
+    {% else %}
+        <img src="https://res.cloudinary.com/dayz5tvip/image/upload/v1771568309/default_rjynmt.png" class="dm-icon">
+    {% endif %}
     <p class="dm-name">{{ other_user.display_name }}</p>
 </div>
 

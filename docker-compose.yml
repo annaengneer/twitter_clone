@@ -5,13 +5,13 @@ services:
     volumes:
       - db-data:/var/lib/postgresql/data
     ports:
-      - "5433:5432"
+      - '5435:5432'
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_DB=django_develop
       - POSTGRES_PASSWORD=postgres
     healthcheck:
-      test: "psql -U postgres"
+      test: 'psql -U postgres'
       interval: 5s
       timeout: 5s
       retries: 5
@@ -22,7 +22,7 @@ services:
     volumes:
       - .:/code
     ports:
-      - "3000:3000"
+      - '3000:3000'
     env_file:
       - .env
     depends_on:
@@ -35,7 +35,7 @@ services:
   smtp:
     image: schickling/mailcatcher
     ports:
-      - "1080:1080"
-      - "1025:1025"
+      - '1080:1080'
+      - '1025:1025'
 volumes:
   db-data:

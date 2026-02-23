@@ -26,17 +26,36 @@ cloudinary.config(
     api_secret=os.getenv('CLOUDINARY_API_SECRET')
 )
 
-SECRET_KEY = env("SECRET_KEY", default=os.environ.get("SECRET_KEY", "dev-insecure-key"))
+SECRET_KEY = env("SECRET_KEY")
 DEBUG = env.bool("DEBUG", default=False)
-ALLOWED_HOSTS = ["localhost", "127.0.0.1", "0.0.0.0", "web", "still-reaches-06925-c85c2689c92d.herokuapp.com"]
+
+if not DEBUG:
+    SECURE_SSL_REDIRECT = True
+    SECURE_HSTS_SECONDS = 3600
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+
+ALLOWED_HOSTS = [
+    # --- local dev ---
+    "localhost", 
+    "127.0.0.1",
+    "0.0.0.0",
+    "web",
+    # --- old deploy ---
+    "still-reaches-06925-c85c2689c92d.herokuapp.com",
+     # --- production (Render) ---
+    "twitter-clone.onrender.com"]
 MEDIA_URL = '/media/'
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 CSRF_TRUSTED_ORIGINS = env.list("CSRF_TRUSTED_ORIGINS", default=[
-    "https://still-reaches-06925.herokuapp.com","https://still-reaches-06925-c85c2689c92d.herokuapp.com"
+    "https://still-reaches-06925.herokuapp.com","https://still-reaches-06925-c85c2689c92d.herokuapp.com","https://twitter-clone.onrender.com"
 ])
 ACCOUNT_DEFAULT_HTTP_PROTOCOL = os.environ.get("DEFAULT_HTTP_PROTOCOL", "http")
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+SECURE_BROWSER_XSS_FILTER = True
+SECURE_CONTENT_TYPE_NOSNIFF = True
+
 USE_X_FORWARDED_HOST = True
 SITE_ID=int(os.environ.get("SITE_ID", "1"))
 AUTH_USER_MODEL = 'twitter_app.User'
@@ -180,9 +199,10 @@ ACCOUNT_SIGNUP_FIELDS = [ "email", "username*","password1*", "password2"]
 
 ACCOUNT_EMAIL_VERIFICATION = "optional"
 
-MAILGUN_API_KEY = os.getenv("MAILGUN_API_KEY")
-MAILGUN_DOMAIN = os.getenv("MAILGUN_DOMAIN")
-DEFAULT_FROM_EMAIL = os.getenv("DEFAULT_FROM_EMAIL")
+# --- future email integration (Mailgun) ---
+# MAILGUN_API_KEY = os.getenv("MAILGUN_API_KEY")
+# MAILGUN_DOMAIN = os.getenv("MAILGUN_DOMAIN")
+DEFAULT_FROM_EMAIL = os.getenv("DEFAULT_FROM_EMAIL", "noreply@example.com")
 ACCOUNT_ADAPTER = 'twitter_app.adapter.CustomAccountAdapter'
 
 SOCIALACCOUNT_PROVIDERS = {
@@ -193,3 +213,5 @@ SOCIALACCOUNT_PROVIDERS = {
         }
     }
 }
+
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"

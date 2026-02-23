@@ -34,12 +34,16 @@
             {% endif %}
         " class="notification-item">
 
-            <!-- アイコン -->
-            <img src="{{ n.from_user.profile.icon_image.url }}" class="notif-icon" alt="icon">
+           
+            {% if n.from_user.profile and n.from_user.profile.icon_image %}
+                <img src="{{ n.from_user.profile.icon_image.url }}" class="notif-icon">
+            {% else %}
+                <img src="https://res.cloudinary.com/dayz5tvip/image/upload/v1771568309/default_rjynmt.png" class="notif-icon">
+            {% endif %}
 
             <div class="notif-text">
 
-                <!-- 通知内容 -->
+            
                 <div class="notif-main">
 
                     {% if n.notification_type == 'like' %}
