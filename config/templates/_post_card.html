@@ -15,33 +15,37 @@
           alt="icon"
         />
         {% endif %}
-        <span class="post-display-name">{{ post.user.display_name }}</span>
-        <span class="post-username">@{{ post.user.username }}</span>
+        <span class="post-display-name">{{ post.user.display_name|default:"名前未設定" }}</span>
+        <span class="post-username">
+          {% if post.user.username %}@{{ post.user.username }}{% else %}@unknown{% endif %}
+        </span>
       </div>
       <div class="post-menu-wrapper">
         <i class="bi bi-three-dots post-menu-icon"></i>
         <div class="post-menu">
-          {% if user.is_authenticated %} {% if request.user != post.user %} {%
-          if post.is_following %}
-          <a
-            href="{% url 'twitter_app:unfollow' post.user.username %}"
-            class="menu-item"
-            >@{{ post.user.username }}さんのフォロー解除</a
-          >
-          {% else %}
-          <a
-            href="{% url 'twitter_app:follow' post.user.username %}"
-            class="menu-item"
-            >@{{ post.user.username }}さんをフォロー</a
-          >
+          {% with post_username=post.user.username %}
+          {% if user.is_authenticated and request.user != post.user and post_username %}
+              {% if post.is_following %}
+                <a
+                  href="{% url 'twitter_app:unfollow' post_username %}"
+                  class="menu-item"
+                  >@{{ post_username }}さんのフォロー解除</a
+                >
+              {% else %}
+                <a
+                  href="{% url 'twitter_app:follow' post_username %}"
+                  class="menu-item"
+                  >@{{ post_username }}さんをフォロー</a
+                >
+              {% endif %}
+              <a
+                href="{% url 'twitter_app:conversation_select' %}"
+                class="menu-item"
+              >
+                @{{ post_username }}さんにメッセージを送信
+              </a>
           {% endif %}
-          <a
-            href="{% url 'twitter_app:conversation_select' %}"
-            class="menu-item"
-          >
-            @{{ post.user.username }}さんにメッセージを送信
-          </a>
-          {% endif %}
+          {% endwith %}
         </div>
       </div>
     </div>
@@ -66,9 +70,11 @@
         />
         {% endif %}
         <span class="post-display-name"
-          >{{ post.repost_from.user.display_name }}</span
+          >{{ post.repost_from.user.display_name|default:"名前未設定" }}</span
         >
-        <span class="post-username">@{{ post.repost_from.user.username}}</span>
+        <span class="post-username">
+          {% if post.repost_from.user.username %}@{{ post.repost_from.user.username }}{% else %}@unknown{% endif %}
+        </span>
       </div>
       <p>{{ post.repost_from.content }}</p>
 
@@ -94,39 +100,52 @@
     <div class="post-actions">
       <div class="action me-4"><i class="bi bi-chat"></i> 12</div>
       <div class="action me-4">
-        <a href="{%url 'twitter_app:post_repost' post.id %}">
-          {% if post.is_repost %}
-          <i class="bi bi-repeat text-success"></i>
-          {% else %}
+        {% if user.is_authenticated %}
+          <a href="{%url 'twitter_app:post_repost' post.id %}">
+            {% if post.is_repost %}
+            <i class="bi bi-repeat text-success"></i>
+            {% else %}
+            <i class="bi bi-repeat"></i>
+            {% endif %}
+          </a>
+        {% else %}
           <i class="bi bi-repeat"></i>
-          {% endif %}
-        </a>
+        {% endif %}
         <span>{{ post.reposts.count }}</span>
       </div>
 
       <div class="action me-4 like-action">
-        <form action="{% url 'twitter_app:post_like' post.id %}" method="POST">
-          {% csrf_token %}
-          <button type="submit" class="like-btn">
-            {% if post.is_liked %}
-            <i class="bi bi-heart-fill liked"></i>
-            {% else %}
-            <i class="bi bi-heart"></i>
-            {% endif %}
-            <span>{{ post.likes.count }}</span>
-          </button>
-        </form>
+        {% if user.is_authenticated %}
+          <form action="{% url 'twitter_app:post_like' post.id %}" method="POST">
+            {% csrf_token %}
+            <button type="submit" class="like-btn">
+              {% if post.is_liked %}
+              <i class="bi bi-heart-fill liked"></i>
+              {% else %}
+              <i class="bi bi-heart"></i>
+              {% endif %}
+              <span>{{ post.likes.count }}</span>
+            </button>
+          </form>
+        {% else %}
+          <i class="bi bi-heart"></i>
+          <span>{{ post.likes.count }}</span>
+        {% endif %}
       </div>
 
       <div class="action"><i class="bi bi-bar-chart"></i> 1500</div>
       <div class="action">
-        <a href="{% url 'twitter_app:bookmark' post.id %}">
-          {% if post.is_bookmarked %}
-          <i class="bi bi-bookmark-fill text-primary"></i>
-          {% else %}
+        {% if user.is_authenticated %}
+          <a href="{% url 'twitter_app:bookmark' post.id %}">
+            {% if post.is_bookmarked %}
+            <i class="bi bi-bookmark-fill text-primary"></i>
+            {% else %}
+            <i class="bi bi-bookmark"></i>
+            {% endif %}
+          </a>
+        {% else %}
           <i class="bi bi-bookmark"></i>
-          {% endif %}
-        </a>
+        {% endif %}
       </div>
     </div>
   </div>

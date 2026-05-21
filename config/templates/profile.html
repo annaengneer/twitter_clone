@@ -10,11 +10,13 @@ MyPage {% else %} Main {% endif %} {% endblock %} {% block page_content %}
     alt="ヘッダー画像"
     class="header-image"
   />
+  {% if user.is_authenticated and request.user == profile.user %}
   <div class="edit-profile-btn">
     <a href="{% url 'twitter_app:profile_edit' %}" class="btn-edit-profile"
       >プロフィールを編集</a
     >
   </div>
+  {% endif %}
   {% endif %}
   <div class="icon">
     {% if profile.icon_image %}
