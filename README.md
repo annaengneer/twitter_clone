@@ -1,23 +1,155 @@
-# 環境構築
+# Twitter Clone（Django）
+
+## 概要
+
+本アプリケーションは、指定された仕様に基づいて開発した  
+Twitter風Webアプリケーションです。
+
+完全なTwitterクローンではなく、  
+課題で定義された機能を実装しています。
 
 
-## .envを作成し、以下を記載
+## ⚠ 補足事項（要件との差分）
 
-SECRET_KEYは自身で生成する
+- 一部スタイル（margin等）の微調整は保留中です。
+- それ以外の機能は仕様に沿って実装しています。
 
-[【Django】settings.pyのSECRET_KEYを再発行(リジェネレート)する](https://noauto-nolife.com/post/django-secret-key-regenerate/)
 
-```.env
-DATABASE_URL="postgres://postgres:postgres@db:5432/django_develop"
-SECRET_KEY=<自身で生成したものを使う>
+
+## 使用技術
+
+- Python
+- Django
+- django-allauth
+- Bootstrap
+- HTML
+- CSS
+- Docker
+- SQLite（開発環境）
+- Heroku（本番環境）
+- MailCatcher（開発用メール確認）
+
+
+
+## 実装機能
+
+### 💻 サインアップ / ログイン
+
+- django-allauthによる認証機能
+- CustomUser（AbstractUser継承）
+- メール認証後にログイン可能
+- Flashメッセージ表示
+- GitHubログイン対応
+- ログアウト可能
+- MailCatcherによる開発環境メール確認
+
+
+
+### 💻 トップページ
+
+- ログイン状態に応じたヘッダー表示切替
+- 左サイドバー表示
+- 「おすすめ」タブ（全ユーザーのツイート）
+- 「フォロー中」タブ（フォロー中ユーザーのツイート）
+- ページネーション（Bootstrap）
+- ツイート投稿フォーム
+- Seedデータあり
+
+
+
+### 💻 プロフィールページ
+
+表示項目：
+
+- 名前
+- アイコン画像
+- ヘッダー画像
+- 自己紹介
+- 場所
+- Webサイト
+- 生年月日
+
+タブ機能：
+
+- ツイート
+- いいね
+- リツイート
+- コメント
+
+各タブに少なくとも1件表示されるSeedデータを用意。
+
+
+
+### 💻 プロフィール編集
+
+- プロフィール専用編集画面を実装
+- モーダルではなく画面遷移型
+
+
+### 💻 ツイート機能
+
+- 140文字制限
+- 画像投稿可能
+- 投稿後に一覧へ表示
+- ツイート詳細ページ
+- コメント投稿機能
+
+
+### 💻 いいね機能
+
+- トグル式（再クリックで解除）
+- 件数表示
+
+
+
+### 💻 リツイート機能
+
+- トグル式
+- 件数表示
+
+
+### 💻 フォロー機能
+
+- ツイートメニューからフォロー可能
+- フォロー中ユーザーのみ表示可能
+
+
+
+### 💻 ブックマーク機能
+
+- トグル式
+- ブックマーク一覧ページ表示
+
+
+
+### 💻 メッセージ機能
+
+- ダイレクトメッセージ機能
+- ルーム形式表示
+- テキスト送信
+
+
+
+### 💻 通知機能
+
+- いいね / リツイート / コメント時に通知生成
+- 通知一覧表示
+- メール通知
+- 全ユーザーで通知が表示されるSeedデータあり
+
+
+
+## ローカル環境での起動方法（Docker）
+
+```bash
+docker compose up --build
+docker compose exec web python manage.py migrate
 ```
 
-## dockerを立ち上げる
+## デモ環境
 
-```
-docker-compose up
-```
+本番環境にデプロイ済みです。
+動作確認済み。
 
-ブラウザで[localhost:3000/hello](http://localhost:3000/hello)にアクセスし、以下の画面が表示されたら、構築完了。
-![セットアップ完了後の画面](./static/setup_completed.png)
-
+URL:
+https://django-twitter-clone-te18.onrender.com
