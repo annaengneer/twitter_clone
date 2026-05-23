@@ -9,13 +9,10 @@
 {% endblock %} 
 {% block header_title %}
 <div class="detail-header">
-  <div class="detail-right">
-    <i class="bi bi-twitter-x x-icon"></i>
-  </div>
   <div class="detail-left">
-    <i class="bi bi-arrow-left back-btn"></i>
-  </div>
-  <div class="detail-center">
+    <a href="{% url 'twitter_app:top' %}" class="back-link" aria-label="トップに戻る">
+      <i class="bi bi-arrow-left back-btn"></i>
+    </a>
     <span class="detail-header-title">ポスト</span>
   </div>
 </div>

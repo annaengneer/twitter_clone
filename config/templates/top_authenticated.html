@@ -16,27 +16,16 @@
 {% endblock %}
 
 {% block page_content %}
-   <div class="cp_tab">
-         <div class="tab">
-            <input type="radio" name="cp_tab" id="tab1_1" aria-controls="first_tab01" checked />
-            <label for="tab1_1">おすすめ</label>
-          </div>
-          <div class="tab">
-            <input type="radio" name="cp_tab" id="tab1_2" aria-controls="second_tab01" />
-            <label for="tab1_2">フォロー中</label>          
-          </div>
+   <div class="timeline-page">
+      <input type="radio" name="timeline_tab" id="tab1_1" aria-controls="first_tab01" checked />
+      <input type="radio" name="timeline_tab" id="tab1_2" aria-controls="second_tab01" />
 
-          <div class="cp_tabpanels">
-            <div id="first_tab01" class="cp_tabpanel">
-            <p>おすすめ</p>
-            </div>
-            <div id="second_tab01" class="cp_tabpanel">
-            <p>フォロー中</p>
-            </div>
-          </div>
-      </div> 
+      <div class="timeline-tab-labels">
+        <label for="tab1_1">おすすめ</label>
+        <label for="tab1_2">フォロー中</label>
+      </div>
 
-      <div class="fixed-content mt-4">
+      <div class="fixed-content">
        <form method="POST" enctype="multipart/form-data">
         {% csrf_token %}
         <div class="form-with-icon">
@@ -52,7 +41,7 @@
               <div class="flex-fill">
                 {{ form.content }}
                 <div class="post-actions">
-                  <label for="id_image" style="cursor:pointer;">
+                  <label for="id_image" class="image-upload-trigger">
                     <i class="bi bi-image"></i>
                   </label>
                   {{ form.image }}
@@ -61,6 +50,7 @@
                 <i class="bi bi-emoji-smile"></i>
                 <i class="bi bi-calendar2-check"></i>
                 <i class="bi bi-geo-alt"></i>
+                <span class="selected-image-status" id="selected-image-status"></span>
               </div>
               <input type="submit" value="投稿する" class="btn btn-primary mt-2 rounded-pill"/>
               </div>
@@ -68,10 +58,42 @@
           </div>
         </div>
        </form>
-       {% for post in object_list %}
-          {% include "_post_card.html" %}
-       {% empty %}
-          <p class="text-muted">まだ投稿がありません。</p>
-       {% endfor %}
+
+      <div class="timeline-tabpanels">
+        <div id="first_tab01" class="timeline-tabpanel">
+          {% for post in object_list %}
+            {% include "_post_card.html" %}
+          {% empty %}
+            <p class="timeline-empty">まだ投稿がありません。</p>
+          {% endfor %}
+        </div>
+        <div id="second_tab01" class="timeline-tabpanel">
+          {% for post in following_posts %}
+            {% include "_post_card.html" %}
+          {% empty %}
+            <p class="timeline-empty">フォロー中のユーザーの投稿はまだありません。</p>
+          {% endfor %}
+        </div>
       </div>
+     </div>
+    </div>
 {% endblock %}
+
+{% block javascripts %}
+{{ block.super }}
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const imageInput = document.getElementById("id_image");
+    const selectedImageStatus = document.getElementById("selected-image-status");
+
+    if (!imageInput || !selectedImageStatus) {
+      return;
+    }
+
+    imageInput.addEventListener("change", () => {
+      const file = imageInput.files && imageInput.files[0];
+      selectedImageStatus.textContent = file ? "添付済み" : "";
+    });
+  });
+</script>
+{% endblock javascripts %}

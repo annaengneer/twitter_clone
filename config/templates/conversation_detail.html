@@ -2,11 +2,25 @@
 {% load static %}
 
 {% block extra_head %}
-<link rel="stylesheet" href="{% static 'css/dm.css' %}">
 <link rel="stylesheet" href="{% static 'css/layout.css' %}">
+<link rel="stylesheet" href="{% static 'css/dm.css' %}">
 {% endblock %}
 
 {% block title %} DM | {{ other_user.display_name }} {% endblock %}
+{% block header_title %}
+<div class="header-dm">
+    <div class="dm-header-left">
+        <a href="{% url 'twitter_app:conversation_list' %}">
+            <i class="bi bi-arrow-left"></i>
+        </a>
+    </div>
+    <div class="dm-header-center">
+        <span class="dm-header-title">メッセージ</span>
+    </div>
+    <div class="dm-header-right"></div>
+</div>
+{% endblock %}
+
 {% block page_content %}
 
 <div class="dm-header">

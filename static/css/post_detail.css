@@ -1,112 +1,124 @@
 .comment-btn {
-    background-color: #42A5F5;
-    border-color: #42A5F5;
-    color: white;
+    background-color: var(--color-accent);
+    border-color: var(--color-accent);
+    color: var(--color-text-inverse);
     float: right;
     margin-right: 15px; 
+    padding: 7px 18px;
+    font-weight: 600;
 }
   
 .comment-btn:hover {
-background-color: #1E88E5;
-border-color: #1E88E5;
+background-color: var(--color-accent-hover);
+border-color: var(--color-accent-hover);
 }
 
 .comment-item {
-    padding: 10px 0;
-    border-bottom: 1px solid #2f3336;
+    padding: 14px 16px;
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    background-color: var(--color-surface);
+    margin-bottom: 12px;
 }
 
 .comment-icon {
-    width: 35px;
-    height: 35px;
+    width: 40px;
+    height: 40px;
     border-radius: 50%;
     object-fit: cover;
 }
 
 .comment-display-name {
-    font-weight: 600;
-    color: #fff;
+    font-weight: 700;
+    color: var(--color-text);
     margin-right: 5px;
 }
 
 .comment-username {
-    color: #8899a6;
-    font-size: 14px;
+    color: var(--color-muted);
+    font-size: 0.9rem;
     margin-right: 5px;
 }
 
 .comment-time {
-    color: #8899a6;
-    font-size: 13px;
+    color: var(--color-muted-soft);
+    font-size: 0.85rem;
 }
 
 .comment-content {
-    color: #fff;
-    margin-top: 3px;
+    color: var(--color-text);
+    margin: 4px 0 0;
+    font-size: 0.98rem;
+    line-height: 1.6;
 }
 
 .comment-actions .action {
     cursor: pointer;
-    font-size: 14px;
-    color: #8899a6;
+    font-size: 13px;
+    color: var(--color-muted-soft);
 }
 
 .comment-actions .action:hover {
-    color: #1d9bf0;
+    color: var(--color-accent);
 }
 .form-control{
-    background-color: #222 !important;
+    background-color: var(--color-surface) !important;
+    border: 1px solid var(--color-border) !important;
+    border-radius: 12px !important;
+    min-height: 96px;
 }
 
 .form-control,
 .form-control:focus,
 form textarea,
 form textarea:focus {
-    color: #fff !important;
+    color: var(--color-text) !important;
+    box-shadow: none !important;
 }
 
 .detail-header {
     display: flex;
     align-items: center;
-    gap: 10px;
-    padding: 12px 20px;
+    justify-content: flex-start;
+    width: 100%;
+    gap: 16px;
+    padding: 0;
+}
+
+.detail-left {
+    display: flex;
+    align-items: center;
+}
+
+.detail-left {
+    gap: 12px;
+}
+
+.back-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    color: var(--color-text);
+    text-decoration: none;
+    border-radius: 50%;
+}
+
+.back-link:hover {
+    background-color: var(--color-surface-soft);
+    color: var(--color-text);
 }
 
 .back-btn {
-    font-size: 22px;
-    color: #fff;
+    font-size: 20px;
+    color: var(--color-text);
 }
 
 .detail-header-title {
-    font-size: 20px;
-    font-weight: 600;
-    color: #fff;
-}
-
-.detail-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 15px;
-}
-
-.detail-header-right {
-    justify-content: flex-end;
-    padding: 40px;
-}
-
-.back-btn {
-    font-size: 22px;
-    color: #fff;
-}
-
-.x-icon {
-    font-size: 22px;
-    color: #fff;
-}
-
-.detail-header .detail-left {
-    margin-left: 20rem;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--color-text);
 }
 
 .like-action,
@@ -118,6 +130,8 @@ form textarea:focus {
 .comment-right {
     display: flex;
     flex-direction: column;
+    flex: 1;
+    min-width: 0;
 }
 
 .comment-inner {
@@ -126,10 +140,25 @@ form textarea:focus {
     gap: 6px;
 }
 
+.comment-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
 
-@media (max-width: 768px) {
-    .detail-left,
-    .detail-center {
-        display: none;
-    }
+.comment-list .text-muted,
+.comment-inner .text-muted {
+    color: var(--color-muted) !important;
+    font-size: 0.9rem;
+}
+
+.comment-actions .post-actions {
+    justify-content: flex-start;
+    gap: 24px;
+    padding: 4px 0 0;
+}
+
+.comment-actions .post-actions-wrapper {
+    border-top: none;
+    margin-top: 0;
 }

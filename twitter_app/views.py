@@ -7,7 +7,7 @@ from .forms import SignUpForm, ProfileForm
 from django.shortcuts import render, redirect, get_object_or_404
 from .forms import PostForm, CommentForm
 from .models import Post,Profile
-from twitter_app.models import Post, Like, Relation, Bookmark, Conversation, Message,Notification
+from twitter_app.models import Post, Like, Relation, Bookmark, Conversation, Message, Notification, Comment
 from twitter_app.utils import send_notification_email
 
 User=get_user_model()
@@ -24,17 +24,25 @@ def top(request):
     else:
         form = PostForm()
 
-    posts = (Post.objects.all().order_by('-id').annotate(
-        is_liked=Exists(Like.objects.filter(post=OuterRef('pk'), user=request.user)),
-        is_repost=Exists(Post.objects.filter(user=request.user,repost_from=OuterRef("pk"))),
-        is_following=Exists(Relation.objects.filter(followers=request.user,followings=OuterRef("user_id"))),
-        is_bookmarked=Exists(Bookmark.objects.filter(user=request.user, post=OuterRef('pk')))
+    post_annotations = {
+        "is_liked": Exists(Like.objects.filter(post=OuterRef('pk'), user=request.user)),
+        "is_repost": Exists(Post.objects.filter(user=request.user,repost_from=OuterRef("pk"))),
+        "is_following": Exists(Relation.objects.filter(followers=request.user,followings=OuterRef("user_id"))),
+        "is_bookmarked": Exists(Bookmark.objects.filter(user=request.user, post=OuterRef('pk'))),
+    }
+    posts = (Post.objects.all().annotate(
+        **post_annotations
     ).order_by('-id').select_related("user", "user__profile"))
-
+    following_posts = (Post.objects.filter(user__following__followers=request.user).annotate(
+        **post_annotations
+    ).order_by('-id').select_related("user", "user__profile"))
+    if request.user.is_authenticated:
+        following_posts = following_posts.exclude(user=request.user)
 
     return render(request, 'top_authenticated.html',{
         "form":form,
         "object_list":posts,
+        "following_posts": following_posts,
     })
 
 class SignupView(CreateView):
@@ -52,14 +60,33 @@ class SignupView(CreateView):
 
 def profile_view(request, username):
     profile = get_object_or_404(Profile, user__username=username)
+    viewer = request.user if request.user.is_authenticated else None
+    post_annotations = {
+        "is_liked": Exists(Like.objects.filter(post=OuterRef('pk'), user=viewer)),
+        "is_repost": Exists(Post.objects.filter(user=viewer,repost_from=OuterRef("pk"))),
+        "is_bookmarked": Exists(Bookmark.objects.filter(user=viewer, post=OuterRef('pk'))),
+    }
     posts = (Post.objects.filter(user=profile.user).order_by('-created_at').annotate(
-        is_liked=Exists(Like.objects.filter(post=OuterRef('pk'), user=request.user)),
-        is_repost=Exists(Post.objects.filter(user=request.user,repost_from=OuterRef("pk")))
-    ))
+        **post_annotations
+    ).select_related("user", "user__profile"))
+    media_posts = (Post.objects.filter(user=profile.user, image__isnull=False).exclude(image="")
+        .order_by('-created_at')
+        .annotate(**post_annotations)
+        .select_related("user", "user__profile"))
+    liked_posts = (Post.objects.filter(likes__user=profile.user)
+        .order_by('-likes__created_at')
+        .annotate(**post_annotations)
+        .select_related("user", "user__profile"))
+    replies = (Comment.objects.filter(user=profile.user)
+        .select_related("user", "user__profile", "post", "post__user")
+        .order_by("-created_at"))
 
     context = {
         "profile": profile,
         "object_list": posts,
+        "media_posts": media_posts,
+        "liked_posts": liked_posts,
+        "replies": replies,
     }
 
     return render(request, 'profile.html', context)
@@ -89,7 +116,9 @@ def post_detail(request, post_id):
         Post.objects.filter(id=post_id).annotate(is_liked=Exists(
             Like.objects.filter(post=OuterRef('pk'), user=request.user)),
             is_repost=Exists(Post.objects.filter(user=request.user, repost_from=OuterRef('pk'))
-            )).first()
+            ),
+            is_bookmarked=Exists(Bookmark.objects.filter(user=request.user, post=OuterRef('pk')))
+            ).first()
     )
     if post is None:
         raise Http404()
