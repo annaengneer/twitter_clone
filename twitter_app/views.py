@@ -12,27 +12,37 @@ from twitter_app.utils import send_notification_email
 
 User=get_user_model()
 
-@login_required
 def top(request):
-    if request.method == 'POST':
+    if request.user.is_authenticated and request.method == 'POST':
         form = PostForm(request.POST, request.FILES)
         if form.is_valid():
             post = form.save(commit=False)
             post.user = request.user
             post.save()
             return redirect('twitter_app:top')
-    else:
+    elif request.user.is_authenticated:
         form = PostForm()
+    else:
+        form = None
 
-    posts = (Post.objects.all().order_by('-id').annotate(
-        is_liked=Exists(Like.objects.filter(post=OuterRef('pk'), user=request.user)),
-        is_repost=Exists(Post.objects.filter(user=request.user,repost_from=OuterRef("pk"))),
-        is_following=Exists(Relation.objects.filter(followers=request.user,followings=OuterRef("user_id"))),
-        is_bookmarked=Exists(Bookmark.objects.filter(user=request.user, post=OuterRef('pk')))
-    ).order_by('-id').select_related("user", "user__profile"))
+    posts = Post.objects.all().order_by('-id').select_related(
+        "user",
+        "user__profile",
+        "repost_from__user",
+        "repost_from__user__profile",
+    )
+
+    if request.user.is_authenticated:
+        posts = posts.annotate(
+            is_liked=Exists(Like.objects.filter(post=OuterRef('pk'), user=request.user)),
+            is_repost=Exists(Post.objects.filter(user=request.user,repost_from=OuterRef("pk"))),
+            is_following=Exists(Relation.objects.filter(followers=request.user,followings=OuterRef("user_id"))),
+            is_bookmarked=Exists(Bookmark.objects.filter(user=request.user, post=OuterRef('pk')))
+        )
 
 
-    return render(request, 'top_authenticated.html',{
+    template_name = 'top_authenticated.html' if request.user.is_authenticated else 'top_unauthenticated.html'
+    return render(request, template_name,{
         "form":form,
         "object_list":posts,
     })
@@ -52,10 +62,20 @@ class SignupView(CreateView):
 
 def profile_view(request, username):
     profile = get_object_or_404(Profile, user__username=username)
-    posts = (Post.objects.filter(user=profile.user).order_by('-created_at').annotate(
-        is_liked=Exists(Like.objects.filter(post=OuterRef('pk'), user=request.user)),
-        is_repost=Exists(Post.objects.filter(user=request.user,repost_from=OuterRef("pk")))
-    ))
+    posts = Post.objects.filter(user=profile.user).order_by('-created_at').select_related(
+        "user",
+        "user__profile",
+        "repost_from__user",
+        "repost_from__user__profile",
+    )
+
+    if request.user.is_authenticated:
+        posts = posts.annotate(
+            is_liked=Exists(Like.objects.filter(post=OuterRef('pk'), user=request.user)),
+            is_repost=Exists(Post.objects.filter(user=request.user,repost_from=OuterRef("pk"))),
+            is_following=Exists(Relation.objects.filter(followers=request.user,followings=OuterRef("user_id"))),
+            is_bookmarked=Exists(Bookmark.objects.filter(user=request.user, post=OuterRef('pk')))
+        )
 
     context = {
         "profile": profile,

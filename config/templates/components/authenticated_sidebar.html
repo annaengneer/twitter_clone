@@ -3,12 +3,17 @@
   <ul class="nav nav-pills flex-column mb-auto">
     <li><a class="item" href="{% url 'twitter_app:top' %}"><i class="bi bi-house-heart"></i>　ホーム</a></li>
     <li><a class="item" href="#"><i class="bi bi-hash"></i>　話題を検索</a></li>
+    {% if user.is_authenticated %}
     <li><a class="item" href="{% url 'twitter_app:notification_list' %}"><i class="bi bi-bell"></i>　通知</a></li>
     <li><a class="item" href="{% url 'twitter_app:conversation_list' %}"><i class="bi bi-envelope"></i>　メッセージ</a></li>
     <li><a class="item" href="{% url 'twitter_app:bookmark_list' %}"><i class="bi bi-bookmark"></i>　ブックマーク</a></li>
+    {% endif %}
     <li><a class="item" href="#"><i class="bi bi-twitter"></i>　Twitter Blue</a></li>
+    {% if user.is_authenticated and user.username %}
     <li><a class="item" href="{% url 'twitter_app:profile_detail' user.username %}"><i class="bi bi-person"></i>　プロフィール</a></li>
+    {% endif %}
     <li><a class="item" href="#"><i class="bi bi-three-dots"></i>　もっとみる</a></li>
+    {% if user.is_authenticated %}
     <li><button class="btn btn-primary mt-3 rounded-pill" style="background-color: #1d9bf0;">投稿する</button></li>
     <li>
     <div class="user_information">
@@ -25,5 +30,8 @@
         </div>
         </div>
         </li>
+    {% else %}
+    <li><a class="btn btn-primary mt-3 rounded-pill" href="{% url 'account_signup' %}">アカウント作成</a></li>
+    {% endif %}
     </ul>
 </div>
