@@ -29,14 +29,16 @@
                 <a
                   href="{% url 'twitter_app:unfollow' post_username %}"
                   class="menu-item"
-                  >@{{ post_username }}さんのフォロー解除</a
                 >
+                  @{{ post_username }}さんのフォロー解除
+                </a>
               {% else %}
                 <a
                   href="{% url 'twitter_app:follow' post_username %}"
                   class="menu-item"
-                  >@{{ post_username }}さんをフォロー</a
                 >
+                  @{{ post_username }}さんをフォロー
+                </a>
               {% endif %}
               <a
                 href="{% url 'twitter_app:conversation_select' %}"
@@ -98,12 +100,12 @@
   </div>
   <div class="post-actions-wrapper">
     <div class="post-actions">
-      <div class="action me-4"><i class="bi bi-chat"></i> 12</div>
-      <div class="action me-4">
+      <div class="action"><i class="bi bi-chat"></i> 12</div>
+      <div class="action">
         {% if user.is_authenticated %}
           <a href="{%url 'twitter_app:post_repost' post.id %}">
             {% if post.is_repost %}
-            <i class="bi bi-repeat text-success"></i>
+            <i class="bi bi-repeat post-action-active"></i>
             {% else %}
             <i class="bi bi-repeat"></i>
             {% endif %}
@@ -114,7 +116,7 @@
         <span>{{ post.reposts.count }}</span>
       </div>
 
-      <div class="action me-4 like-action">
+      <div class="action like-action">
         {% if user.is_authenticated %}
           <form action="{% url 'twitter_app:post_like' post.id %}" method="POST">
             {% csrf_token %}
@@ -138,7 +140,7 @@
         {% if user.is_authenticated %}
           <a href="{% url 'twitter_app:bookmark' post.id %}">
             {% if post.is_bookmarked %}
-            <i class="bi bi-bookmark-fill text-primary"></i>
+            <i class="bi bi-bookmark-fill post-action-active"></i>
             {% else %}
             <i class="bi bi-bookmark"></i>
             {% endif %}

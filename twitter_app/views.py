@@ -3,11 +3,12 @@ from django.contrib.auth.decorators import login_required
 from django.db.models import Exists, OuterRef, Q, Prefetch
 from django.views.generic import CreateView
 from django.urls import reverse_lazy, reverse
+from django.http import Http404
 from .forms import SignUpForm, ProfileForm
 from django.shortcuts import render, redirect, get_object_or_404
 from .forms import PostForm, CommentForm
 from .models import Post,Profile
-from twitter_app.models import Post, Like, Relation, Bookmark, Conversation, Message,Notification
+from twitter_app.models import Post, Like, Relation, Bookmark, Conversation, Message, Notification, Comment
 from twitter_app.utils import send_notification_email
 
 User=get_user_model()
@@ -31,20 +32,32 @@ def top(request):
         "repost_from__user",
         "repost_from__user__profile",
     )
+    following_posts = Post.objects.none()
 
     if request.user.is_authenticated:
-        posts = posts.annotate(
-            is_liked=Exists(Like.objects.filter(post=OuterRef('pk'), user=request.user)),
-            is_repost=Exists(Post.objects.filter(user=request.user,repost_from=OuterRef("pk"))),
-            is_following=Exists(Relation.objects.filter(followers=request.user,followings=OuterRef("user_id"))),
-            is_bookmarked=Exists(Bookmark.objects.filter(user=request.user, post=OuterRef('pk')))
-        )
-
+        post_annotations = {
+            "is_liked": Exists(Like.objects.filter(post=OuterRef('pk'), user=request.user)),
+            "is_repost": Exists(Post.objects.filter(user=request.user,repost_from=OuterRef("pk"))),
+            "is_following": Exists(Relation.objects.filter(followers=request.user,followings=OuterRef("user_id"))),
+            "is_bookmarked": Exists(Bookmark.objects.filter(user=request.user, post=OuterRef('pk'))),
+        }
+        posts = posts.annotate(**post_annotations)
+        following_posts = (Post.objects.filter(user__following__followers=request.user)
+            .exclude(user=request.user)
+            .annotate(**post_annotations)
+            .order_by('-id')
+            .select_related(
+                "user",
+                "user__profile",
+                "repost_from__user",
+                "repost_from__user__profile",
+            ))
 
     template_name = 'top_authenticated.html' if request.user.is_authenticated else 'top_unauthenticated.html'
     return render(request, template_name,{
         "form":form,
         "object_list":posts,
+        "following_posts": following_posts,
     })
 
 class SignupView(CreateView):
@@ -68,18 +81,39 @@ def profile_view(request, username):
         "repost_from__user",
         "repost_from__user__profile",
     )
+    media_posts = Post.objects.filter(user=profile.user, image__isnull=False).exclude(image="").order_by('-created_at').select_related(
+        "user",
+        "user__profile",
+        "repost_from__user",
+        "repost_from__user__profile",
+    )
+    liked_posts = Post.objects.filter(likes__user=profile.user).order_by('-likes__created_at').select_related(
+        "user",
+        "user__profile",
+        "repost_from__user",
+        "repost_from__user__profile",
+    )
+    replies = (Comment.objects.filter(user=profile.user)
+        .select_related("user", "user__profile", "post", "post__user")
+        .order_by("-created_at"))
 
     if request.user.is_authenticated:
-        posts = posts.annotate(
-            is_liked=Exists(Like.objects.filter(post=OuterRef('pk'), user=request.user)),
-            is_repost=Exists(Post.objects.filter(user=request.user,repost_from=OuterRef("pk"))),
-            is_following=Exists(Relation.objects.filter(followers=request.user,followings=OuterRef("user_id"))),
-            is_bookmarked=Exists(Bookmark.objects.filter(user=request.user, post=OuterRef('pk')))
-        )
+        post_annotations = {
+            "is_liked": Exists(Like.objects.filter(post=OuterRef('pk'), user=request.user)),
+            "is_repost": Exists(Post.objects.filter(user=request.user,repost_from=OuterRef("pk"))),
+            "is_following": Exists(Relation.objects.filter(followers=request.user,followings=OuterRef("user_id"))),
+            "is_bookmarked": Exists(Bookmark.objects.filter(user=request.user, post=OuterRef('pk'))),
+        }
+        posts = posts.annotate(**post_annotations)
+        media_posts = media_posts.annotate(**post_annotations)
+        liked_posts = liked_posts.annotate(**post_annotations)
 
     context = {
         "profile": profile,
         "object_list": posts,
+        "media_posts": media_posts,
+        "liked_posts": liked_posts,
+        "replies": replies,
     }
 
     return render(request, 'profile.html', context)
@@ -109,7 +143,9 @@ def post_detail(request, post_id):
         Post.objects.filter(id=post_id).annotate(is_liked=Exists(
             Like.objects.filter(post=OuterRef('pk'), user=request.user)),
             is_repost=Exists(Post.objects.filter(user=request.user, repost_from=OuterRef('pk'))
-            )).first()
+            ),
+            is_bookmarked=Exists(Bookmark.objects.filter(user=request.user, post=OuterRef('pk')))
+            ).first()
     )
     if post is None:
         raise Http404()

@@ -60,10 +60,10 @@ MyPage {% else %} Main {% endif %} {% endblock %} {% block page_content %}
 </div>
 <div class="cp_tab">
   <input type="radio" name="cp_tab" id="tab_tweet" checked />
-  <label for="tab_tweet">ツイート</label>
+  <label for="tab_tweet">投稿</label>
 
   <input type="radio" name="cp_tab" id="tab_reply" />
-  <label for="tab_reply">ツイートと返信</label>
+  <label for="tab_reply">返信</label>
 
   <input type="radio" name="cp_tab" id="tab_media" />
   <label for="tab_media">メディア</label>
@@ -73,11 +73,41 @@ MyPage {% else %} Main {% endif %} {% endblock %} {% block page_content %}
 
   <div class="cp_tabpanels">
     <div id="tweet_panel" class="cp_tabpanel">
-      {% for post in object_list %} {% include "_post_card.html" %} {% endfor %}
+      {% for post in object_list %}
+        {% include "_post_card.html" %}
+      {% empty %}
+        <p class="profile-empty">まだ投稿がありません。</p>
+      {% endfor %}
     </div>
-    <div id="reply_panel" class="cp_tabpanel">ツイートと返信一覧</div>
-    <div id="media_panel" class="cp_tabpanel">メディア付きツイート</div>
-    <div id="like_panel" class="cp_tabpanel">いいねしたツイート</div>
+    <div id="reply_panel" class="cp_tabpanel">
+      {% for reply in replies %}
+        <a href="{% url 'twitter_app:post_detail' reply.post.id %}" class="reply-card">
+          <div class="reply-card-meta">
+            <span>{{ reply.user.display_name }}</span>
+            <span>@{{ reply.user.username }}</span>
+            <span>{{ reply.created_at|date:"Y/m/d H:i" }}</span>
+          </div>
+          <p class="reply-card-content">{{ reply.content }}</p>
+          <p class="reply-card-target">返信先: @{{ reply.post.user.username }} さんの投稿</p>
+        </a>
+      {% empty %}
+        <p class="profile-empty">まだ返信がありません。</p>
+      {% endfor %}
+    </div>
+    <div id="media_panel" class="cp_tabpanel">
+      {% for post in media_posts %}
+        {% include "_post_card.html" %}
+      {% empty %}
+        <p class="profile-empty">まだメディア付き投稿がありません。</p>
+      {% endfor %}
+    </div>
+    <div id="like_panel" class="cp_tabpanel">
+      {% for post in liked_posts %}
+        {% include "_post_card.html" %}
+      {% empty %}
+        <p class="profile-empty">まだいいねした投稿がありません。</p>
+      {% endfor %}
+    </div>
   </div>
 </div>
 

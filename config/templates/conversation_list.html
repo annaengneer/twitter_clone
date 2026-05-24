@@ -2,15 +2,15 @@
 {% load static %}
 
 {% block extra_head %}
-<link rel="stylesheet" href="{% static 'css/dm.css' %}">
 <link rel="stylesheet" href="{% static 'css/layout.css' %}">
+<link rel="stylesheet" href="{% static 'css/dm.css' %}">
 {% endblock %}
 
 {% block header_title %}
 <div class="header-dm">
     <div class="dm-header-left">
         <a href="{% url 'twitter_app:top' %}">
-            <i class="bi bi-twitter-x x-icon"></i>
+            <i class="bi bi-arrow-left"></i>
         </a>
     </div>
     <div class="dm-header-center">
