@@ -32,6 +32,28 @@
   {% if query %}
     <p class="search-summary">「{{ query }}」の検索結果</p>
 
+    <div class="search-filter-tabs">
+      <a
+        href="{% url 'twitter_app:search' %}?q={{ query|urlencode }}&type=all"
+        class="{% if result_type == 'all' %}active{% endif %}"
+      >
+        すべて
+      </a>
+      <a
+        href="{% url 'twitter_app:search' %}?q={{ query|urlencode }}&type=users"
+        class="{% if result_type == 'users' %}active{% endif %}"
+      >
+        ユーザー
+      </a>
+      <a
+        href="{% url 'twitter_app:search' %}?q={{ query|urlencode }}&type=posts"
+        class="{% if result_type == 'posts' %}active{% endif %}"
+      >
+        投稿
+      </a>
+    </div>
+
+    {% if result_type == 'all' or result_type == 'users' %}
     <section class="search-section">
       <h2>ユーザー</h2>
       {% for result_user in users %}
@@ -50,7 +72,9 @@
         <p class="search-empty">一致するユーザーはいません。</p>
       {% endfor %}
     </section>
+    {% endif %}
 
+    {% if result_type == 'all' or result_type == 'posts' %}
     <section class="search-section">
       <h2>投稿</h2>
       {% for post in posts %}
@@ -59,6 +83,7 @@
         <p class="search-empty">一致する投稿はありません。</p>
       {% endfor %}
     </section>
+    {% endif %}
   {% else %}
     <div class="search-start">
       <i class="bi bi-search"></i>

@@ -74,6 +74,42 @@
   font-size: 0.92rem;
 }
 
+.search-filter-tabs {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin: 0 0 18px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.search-filter-tabs a {
+  position: relative;
+  padding: 11px 8px;
+  color: var(--color-muted);
+  text-align: center;
+  text-decoration: none;
+  font-weight: 700;
+}
+
+.search-filter-tabs a:hover {
+  background-color: var(--color-surface-soft);
+  color: var(--color-text);
+}
+
+.search-filter-tabs a.active {
+  color: var(--color-text);
+}
+
+.search-filter-tabs a.active::after {
+  content: "";
+  position: absolute;
+  left: 26%;
+  right: 26%;
+  bottom: -1px;
+  height: 3px;
+  border-radius: 999px;
+  background-color: var(--color-accent);
+}
+
 .search-section {
   margin-top: 20px;
 }

@@ -68,6 +68,10 @@ def top(request):
 
 def search(request):
     query = request.GET.get("q", "").strip()
+    result_type = request.GET.get("type", "all")
+    if result_type not in {"all", "users", "posts"}:
+        result_type = "all"
+
     posts = Post.objects.none()
     users = User.objects.none()
 
@@ -94,6 +98,7 @@ def search(request):
 
     return render(request, "search.html", {
         "query": query,
+        "result_type": result_type,
         "posts": posts,
         "users": users,
     })
