@@ -52,6 +52,12 @@
                 <i class="bi bi-geo-alt"></i>
                 <span class="selected-image-status" id="selected-image-status"></span>
               </div>
+              <div class="compose-image-preview" id="compose-image-preview" hidden>
+                <img src="" alt="選択した画像のプレビュー" id="compose-image-preview-img">
+                <button type="button" id="clear-compose-image" aria-label="選択した画像を取り消す">
+                  <i class="bi bi-x"></i>
+                </button>
+              </div>
               <input type="submit" value="投稿する" class="btn btn-primary mt-2 rounded-pill"/>
               </div>
             </div>
@@ -85,14 +91,46 @@
   document.addEventListener("DOMContentLoaded", () => {
     const imageInput = document.getElementById("id_image");
     const selectedImageStatus = document.getElementById("selected-image-status");
+    const preview = document.getElementById("compose-image-preview");
+    const previewImage = document.getElementById("compose-image-preview-img");
+    const clearImageButton = document.getElementById("clear-compose-image");
 
-    if (!imageInput || !selectedImageStatus) {
+    if (!imageInput || !selectedImageStatus || !preview || !previewImage || !clearImageButton) {
       return;
     }
+
+    let previewUrl = null;
 
     imageInput.addEventListener("change", () => {
       const file = imageInput.files && imageInput.files[0];
       selectedImageStatus.textContent = file ? "添付済み" : "";
+
+      if (previewUrl) {
+        URL.revokeObjectURL(previewUrl);
+        previewUrl = null;
+      }
+
+      if (!file) {
+        preview.hidden = true;
+        previewImage.src = "";
+        return;
+      }
+
+      previewUrl = URL.createObjectURL(file);
+      previewImage.src = previewUrl;
+      preview.hidden = false;
+    });
+
+    clearImageButton.addEventListener("click", () => {
+      imageInput.value = "";
+      selectedImageStatus.textContent = "";
+      preview.hidden = true;
+      previewImage.src = "";
+
+      if (previewUrl) {
+        URL.revokeObjectURL(previewUrl);
+        previewUrl = null;
+      }
     });
   });
 </script>
