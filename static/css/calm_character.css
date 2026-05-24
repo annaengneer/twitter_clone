@@ -1,0 +1,235 @@
+.calm-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.calm-back-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  color: var(--color-text);
+  text-decoration: none;
+}
+
+.calm-back-link:hover {
+  background-color: var(--color-surface-soft);
+  color: var(--color-text);
+}
+
+.calm-header-title {
+  color: var(--color-text);
+  font-size: 1.08rem;
+  font-weight: 700;
+}
+
+.calm-page {
+  width: 100%;
+  max-width: 720px;
+}
+
+.calm-hero {
+  display: grid;
+  grid-template-columns: 170px 1fr;
+  gap: 24px;
+  align-items: center;
+  padding: 24px;
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  background-color: var(--color-surface);
+}
+
+.calm-character {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 150px;
+  height: 150px;
+  border-radius: 44% 56% 48% 52%;
+  background-color: var(--color-surface-soft);
+  color: var(--color-accent);
+}
+
+.calm-character i {
+  position: absolute;
+  right: 20px;
+  bottom: 20px;
+  font-size: 1.4rem;
+}
+
+.calm-character-face {
+  position: relative;
+  width: 82px;
+  height: 58px;
+}
+
+.eye {
+  position: absolute;
+  top: 16px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: var(--color-accent-active);
+}
+
+.eye.left {
+  left: 18px;
+}
+
+.eye.right {
+  right: 18px;
+}
+
+.mouth {
+  position: absolute;
+  left: 50%;
+  bottom: 12px;
+  width: 28px;
+  height: 12px;
+  border-bottom: 3px solid var(--color-accent-active);
+  border-radius: 0 0 999px 999px;
+  transform: translateX(-50%);
+}
+
+.calm-message {
+  min-width: 0;
+}
+
+.calm-label {
+  margin: 0 0 6px;
+  color: var(--color-accent);
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.calm-message h1 {
+  margin: 0;
+  color: var(--color-text);
+  font-size: 1.45rem;
+  line-height: 1.4;
+}
+
+.calm-message p:last-child {
+  margin: 12px 0 0;
+  color: var(--color-muted);
+  line-height: 1.7;
+}
+
+.calm-suggestions {
+  margin-top: 16px;
+  padding: 18px;
+  border: 1px solid var(--color-border);
+  border-radius: 14px;
+  background-color: var(--color-surface);
+}
+
+.calm-suggestions p {
+  margin: 0 0 10px;
+  color: var(--color-text);
+  font-weight: 700;
+}
+
+.calm-suggestions blockquote {
+  margin: 0;
+  padding: 14px 16px;
+  border-left: 3px solid var(--color-accent);
+  border-radius: 8px;
+  color: var(--color-text);
+  background-color: var(--color-surface-soft);
+  line-height: 1.7;
+}
+
+.calm-talk {
+  margin-top: 16px;
+  padding: 18px;
+  border: 1px solid var(--color-border);
+  border-radius: 14px;
+  background-color: var(--color-surface);
+}
+
+.calm-talk > p:first-child {
+  margin: 0 0 10px;
+  color: var(--color-text);
+  font-weight: 700;
+}
+
+.calm-talk div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.calm-options[hidden] {
+  display: none;
+}
+
+.calm-talk button {
+  padding: 7px 11px;
+  border: none;
+  border-radius: 999px;
+  color: var(--color-muted);
+  background-color: var(--color-surface-soft);
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.calm-talk button:hover {
+  color: var(--color-text);
+  background-color: var(--color-border);
+}
+
+.calm-response {
+  margin: 14px 0 0;
+  padding: 14px 16px;
+  border-radius: 12px;
+  color: var(--color-text);
+  background-color: var(--color-bg);
+  line-height: 1.7;
+}
+
+.calm-selected {
+  display: inline-flex;
+  margin: 0;
+  padding: 7px 11px;
+  border-radius: 999px;
+  color: var(--color-text);
+  background-color: var(--color-surface-soft);
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.calm-selected[hidden],
+.calm-reset[hidden] {
+  display: none;
+}
+
+.calm-reset {
+  margin-top: 10px;
+  border: none;
+  border-radius: 999px;
+  padding: 7px 12px;
+  color: var(--color-accent);
+  background-color: transparent;
+  font-weight: 700;
+}
+
+.calm-reset:hover {
+  background-color: var(--color-surface-soft);
+}
+
+@media (max-width: 640px) {
+  .calm-hero {
+    grid-template-columns: 1fr;
+    justify-items: center;
+    text-align: center;
+  }
+
+  .calm-message h1 {
+    font-size: 1.25rem;
+  }
+}

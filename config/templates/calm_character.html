@@ -1,0 +1,101 @@
+{% extends "base_layout.html" %}
+{% load static %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'css/layout.css' %}">
+<link rel="stylesheet" href="{% static 'css/calm_character.css' %}">
+{% endblock %}
+
+{% block header_title %}
+<div class="calm-header">
+  <a href="{% url 'twitter_app:top' %}" class="calm-back-link" aria-label="トップに戻る">
+    <i class="bi bi-arrow-left"></i>
+  </a>
+  <span class="calm-header-title">Calm</span>
+</div>
+{% endblock %}
+
+{% block page_content %}
+<section class="calm-page">
+  <div class="calm-hero">
+    <div class="calm-character" aria-hidden="true">
+      <div class="calm-character-face">
+        <span class="eye left"></span>
+        <span class="eye right"></span>
+        <span class="mouth"></span>
+      </div>
+      <i class="bi bi-leaf"></i>
+    </div>
+
+    <div class="calm-message">
+      <p class="calm-label">Calm character</p>
+      <h1>少しだけ、ひと息つきましょう。</h1>
+      <p>
+        投稿する前や、気持ちが揺れたときに立ち止まれる場所です。
+        まずは深呼吸して、今の気持ちをゆっくり整えましょう。
+      </p>
+    </div>
+  </div>
+
+  <div class="calm-suggestions">
+    <p>今日の一言</p>
+    <blockquote>{{ daily_message }}</blockquote>
+  </div>
+
+  <div class="calm-talk">
+    <p>今の気持ちに近いものを選んでください</p>
+    <div class="calm-options" id="calm-options">
+      <button type="button" data-message="今日もお疲れさまでした。ちゃんと向き合った時間は、見えなくても自分の中に残っています。明日は今日より少しだけ軽く進めます。">
+        今日ちょっと疲れた
+      </button>
+      <button type="button" data-message="頑張れた日ですね。全部が完璧じゃなくても、前に進もうとしたことは十分大切です。明日もその調子で、少しずついきましょう。">
+        今日頑張れた
+      </button>
+      <button type="button" data-message="投稿する前に一度立ち止まれたのは、とても良い選択です。言葉を少し整えるだけで、自分にも相手にもやさしくできます。">
+        投稿前に落ち着きたい
+      </button>
+      <button type="button" data-message="気分を切り替えたい時は、まず深呼吸をひとつ。今の気持ちを置いて、次の自分に少し余白を作りましょう。">
+        気分を切り替えたい
+      </button>
+    </div>
+    <p class="calm-selected" id="calm-selected" hidden></p>
+    <p class="calm-response" id="calm-response">選ぶと、Calmから一言が表示されます。</p>
+    <button type="button" class="calm-reset" id="calm-reset" hidden>もう一度選ぶ</button>
+  </div>
+</section>
+{% endblock %}
+
+{% block javascripts %}
+{{ block.super }}
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const response = document.getElementById("calm-response");
+    const selected = document.getElementById("calm-selected");
+    const options = document.getElementById("calm-options");
+    const reset = document.getElementById("calm-reset");
+    const buttons = document.querySelectorAll(".calm-talk button");
+
+    if (!response || !selected || !options || !reset || !buttons.length) {
+      return;
+    }
+
+    buttons.forEach((button) => {
+      button.addEventListener("click", () => {
+        selected.textContent = button.textContent.trim();
+        selected.hidden = false;
+        response.textContent = button.dataset.message;
+        options.hidden = true;
+        reset.hidden = false;
+      });
+    });
+
+    reset.addEventListener("click", () => {
+      selected.textContent = "";
+      selected.hidden = true;
+      response.textContent = "選ぶと、Calmから一言が表示されます。";
+      options.hidden = false;
+      reset.hidden = true;
+    });
+  });
+</script>
+{% endblock javascripts %}

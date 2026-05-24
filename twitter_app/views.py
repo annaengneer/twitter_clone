@@ -4,6 +4,7 @@ from django.db.models import Exists, OuterRef, Q, Prefetch
 from django.views.generic import CreateView
 from django.urls import reverse_lazy, reverse
 from django.http import Http404
+from django.utils import timezone
 from .forms import SignUpForm, ProfileForm
 from django.shortcuts import render, redirect, get_object_or_404
 from .forms import PostForm, CommentForm
@@ -58,6 +59,19 @@ def top(request):
         "form":form,
         "object_list":posts,
         "following_posts": following_posts,
+    })
+
+def calm_character(request):
+    daily_messages = [
+        "今日できたことは、ちゃんと明日の力になります。",
+        "小さく進めた一日も、続けていけば大きな前進です。",
+        "今日はここまで来られました。明日は少し軽い気持ちで始められます。",
+        "うまくいかない時間があっても、頑張ったことは消えません。",
+        "今日の自分を責めすぎず、明日の自分に少しだけ期待してみましょう。",
+    ]
+    today_index = timezone.localdate().toordinal() % len(daily_messages)
+    return render(request, "calm_character.html", {
+        "daily_message": daily_messages[today_index],
     })
 
 class SignupView(CreateView):

@@ -13,7 +13,7 @@
     <li><a class="item" href="{% url 'twitter_app:conversation_list' %}"><i class="bi bi-envelope"></i>　メッセージ</a></li>
     <li><a class="item" href="{% url 'twitter_app:bookmark_list' %}"><i class="bi bi-bookmark"></i>　ブックマーク</a></li>
     {% endif %}
-    <li><a class="item" href="#"><i class="bi bi-leaf"></i>　Calm</a></li>
+    <li><a class="item" href="{% url 'twitter_app:calm_character' %}"><i class="bi bi-leaf"></i>　Calm</a></li>
     {% if user.is_authenticated and user.username %}
     <li><a class="item" href="{% url 'twitter_app:profile_detail' user.username %}"><i class="bi bi-person"></i>　プロフィール</a></li>
     {% endif %}
