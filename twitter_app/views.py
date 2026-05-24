@@ -13,6 +13,17 @@ from twitter_app.utils import send_notification_email
 
 User=get_user_model()
 
+def get_post_annotations(user):
+    if not user.is_authenticated:
+        return {}
+
+    return {
+        "is_liked": Exists(Like.objects.filter(post=OuterRef('pk'), user=user)),
+        "is_repost": Exists(Post.objects.filter(user=user,repost_from=OuterRef("pk"))),
+        "is_following": Exists(Relation.objects.filter(followers=user,followings=OuterRef("user_id"))),
+        "is_bookmarked": Exists(Bookmark.objects.filter(user=user, post=OuterRef('pk'))),
+    }
+
 def top(request):
     if request.user.is_authenticated and request.method == 'POST':
         form = PostForm(request.POST, request.FILES)
@@ -35,12 +46,7 @@ def top(request):
     following_posts = Post.objects.none()
 
     if request.user.is_authenticated:
-        post_annotations = {
-            "is_liked": Exists(Like.objects.filter(post=OuterRef('pk'), user=request.user)),
-            "is_repost": Exists(Post.objects.filter(user=request.user,repost_from=OuterRef("pk"))),
-            "is_following": Exists(Relation.objects.filter(followers=request.user,followings=OuterRef("user_id"))),
-            "is_bookmarked": Exists(Bookmark.objects.filter(user=request.user, post=OuterRef('pk'))),
-        }
+        post_annotations = get_post_annotations(request.user)
         posts = posts.annotate(**post_annotations)
         following_posts = (Post.objects.filter(user__following__followers=request.user)
             .exclude(user=request.user)
@@ -58,6 +64,38 @@ def top(request):
         "form":form,
         "object_list":posts,
         "following_posts": following_posts,
+    })
+
+def search(request):
+    query = request.GET.get("q", "").strip()
+    posts = Post.objects.none()
+    users = User.objects.none()
+
+    if query:
+        posts = Post.objects.filter(
+            Q(content__icontains=query)
+            | Q(user__username__icontains=query)
+            | Q(user__display_name__icontains=query)
+        ).order_by("-id").select_related(
+            "user",
+            "user__profile",
+            "repost_from__user",
+            "repost_from__user__profile",
+        )
+        post_annotations = get_post_annotations(request.user)
+        if post_annotations:
+            posts = posts.annotate(**post_annotations)
+
+        users = User.objects.filter(
+            Q(username__icontains=query)
+            | Q(display_name__icontains=query)
+            | Q(profile__introduce_content__icontains=query)
+        ).select_related("profile").order_by("username")
+
+    return render(request, "search.html", {
+        "query": query,
+        "posts": posts,
+        "users": users,
     })
 
 class SignupView(CreateView):

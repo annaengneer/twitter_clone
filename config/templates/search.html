@@ -1,0 +1,69 @@
+{% extends "base_layout.html" %}
+{% load static %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'css/layout.css' %}">
+<link rel="stylesheet" href="{% static 'css/search.css' %}">
+{% endblock %}
+
+{% block header_title %}
+<div class="search-header">
+  <a href="{% url 'twitter_app:top' %}" class="search-back-link" aria-label="トップに戻る">
+    <i class="bi bi-arrow-left"></i>
+  </a>
+  <span class="search-header-title">検索</span>
+</div>
+{% endblock %}
+
+{% block page_content %}
+<div class="search-page">
+  <form action="{% url 'twitter_app:search' %}" method="GET" class="search-form">
+    <i class="bi bi-search"></i>
+    <input
+      type="search"
+      name="q"
+      value="{{ query }}"
+      placeholder="投稿やユーザーを検索"
+      autocomplete="off"
+    >
+    <button type="submit">検索</button>
+  </form>
+
+  {% if query %}
+    <p class="search-summary">「{{ query }}」の検索結果</p>
+
+    <section class="search-section">
+      <h2>ユーザー</h2>
+      {% for result_user in users %}
+        <a href="{% url 'twitter_app:profile_detail' result_user.username %}" class="search-user-card">
+          {% if result_user.profile.icon_image %}
+            <img src="{{ result_user.profile.icon_image.url }}" alt="プロフィール画像">
+          {% else %}
+            <img src="https://res.cloudinary.com/dayz5tvip/image/upload/v1771568309/default_rjynmt.png" alt="プロフィール画像">
+          {% endif %}
+          <span>
+            <strong>{{ result_user.display_name|default:"名前未設定" }}</strong>
+            <small>@{{ result_user.username }}</small>
+          </span>
+        </a>
+      {% empty %}
+        <p class="search-empty">一致するユーザーはいません。</p>
+      {% endfor %}
+    </section>
+
+    <section class="search-section">
+      <h2>投稿</h2>
+      {% for post in posts %}
+        {% include "_post_card.html" %}
+      {% empty %}
+        <p class="search-empty">一致する投稿はありません。</p>
+      {% endfor %}
+    </section>
+  {% else %}
+    <div class="search-start">
+      <i class="bi bi-search"></i>
+      <p>気になる投稿やユーザーを検索できます。</p>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}
