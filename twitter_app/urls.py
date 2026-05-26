@@ -5,6 +5,7 @@ app_name = 'twitter_app'
 
 urlpatterns = [
     path('', views.top, name='top'),
+    path('search/', views.search, name='search'),
     path('signup/', views.SignupView.as_view(), name="signup"),
     path('profile/<str:username>/', views.profile_view, name='profile_detail'),
     path('settings/profile', views.profile_edit, name='profile_edit'),

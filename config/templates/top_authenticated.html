@@ -26,6 +26,17 @@
       </div>
 
       <div class="fixed-content">
+       <form action="{% url 'twitter_app:search' %}" method="GET" class="top-search-form">
+        <i class="bi bi-search"></i>
+        <input
+          type="search"
+          name="q"
+          placeholder="投稿やユーザーを検索"
+          autocomplete="off"
+        >
+        <button type="submit">検索</button>
+       </form>
+
        <form method="POST" enctype="multipart/form-data">
         {% csrf_token %}
         <div class="form-with-icon">
