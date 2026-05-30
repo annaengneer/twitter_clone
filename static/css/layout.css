@@ -287,8 +287,17 @@ body {
     align-items: center;
     gap: 8px;
     margin-top: auto;
-    padding-top: 10px;
+    padding: 8px 0 0;
     border-top: none;
+    border-radius: 10px;
+    color: var(--color-text);
+    text-decoration: none;
+    transition: background-color 0.2s ease;
+  }
+
+  .sidebar .user_information:hover {
+    background-color: var(--color-surface-soft);
+    color: var(--color-text);
   }
   
   .sidebar .user_information .user-icon img {
