@@ -4,61 +4,138 @@
 {% block title %}プロフィール編集{% endblock %}
 
 {% block extra_head %}
+<link rel="stylesheet" href="{% static 'css/layout.css' %}">
 <link rel="stylesheet" href="{% static 'css/profile_edit.css' %}?v=9999">
 {% endblock %}
 
 {% block content %}
-<div class="profile-edit">
-  <h2>プロフィールを編集</h2>
-
-  <form method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-
-    <div class="form-group">
-      <label for="username">ユーザー名</label>
-      <input type="text" id="name" name="username" value="{{ form.username.value }}">
+<main class="profile-edit-page">
+  <section class="profile-edit">
+    <div class="profile-edit-header">
+      <a href="{% url 'twitter_app:profile_detail' user.username %}" class="profile-edit-back" aria-label="プロフィールへ戻る">
+        <i class="bi bi-arrow-left"></i>
+      </a>
+      <div>
+        <h1>プロフィールを編集</h1>
+        <p>表示名、自己紹介、画像などを整えられます。</p>
+      </div>
     </div>
 
-    <div class="form-group">
-      <label class="form-label">ヘッダー画像</label>
-      {% if form.instance.header_image %}
-        <img src="{{ form.instance.header_image.url }}" alt="ヘッダー画像">
-      {% endif %}
-      <input type="file" name="header_image">
-    </div>
+    <form method="post" enctype="multipart/form-data" class="profile-edit-form">
+      {% csrf_token %}
+      {{ form.non_field_errors }}
 
-    <div class="form-group">
-        <label class="form-label">アイコン画像</label>
-        {% if form.instance.icon_image %}
-            <img src="{{ form.instance.icon_image.url }}" alt="アイコン画像">
-        {% endif %}
-        <input type="file" name="icon_image">
-    </div>
+      <div class="image-edit-group">
+        <div class="header-preview">
+          {% if form.instance.header_image %}
+            <img src="{{ form.instance.header_image.url }}" alt="現在のヘッダー画像" id="header-preview-image">
+          {% else %}
+            <div class="image-placeholder" id="header-preview-image">ヘッダー画像</div>
+          {% endif %}
+        </div>
 
-    <div class="form-group">
-      <label for="introduce_content">プロフィール</label>
-      <textarea id="introduce_content" name="introduce_content" rows="4">{{ form.introduce_content.value }}</textarea>
-    </div>
+        <div class="icon-preview">
+          {% if form.instance.icon_image %}
+            <img src="{{ form.instance.icon_image.url }}" alt="現在のアイコン画像" id="icon-preview-image">
+          {% else %}
+            <img src="https://res.cloudinary.com/dayz5tvip/image/upload/v1771568309/default_rjynmt.png" alt="現在のアイコン画像" id="icon-preview-image">
+          {% endif %}
+        </div>
+      </div>
 
-    <div class="form-group">
-      <label for="place">場所</label>
-      <input type="text" id="place" name="place" value="{{ form.place.value }}">
-    </div>
+      <div class="file-actions">
+        <label>
+          <span><i class="bi bi-person-circle"></i> アイコン画像を変更</span>
+          {{ form.icon_image }}
+        </label>
+        <label>
+          <span><i class="bi bi-image"></i> ヘッダー画像を変更</span>
+          {{ form.header_image }}
+        </label>
+      </div>
 
-    <div class="form-group">
-      <label for="website">Webサイト</label>
-      <input type="url" id="website" name="website" value="{{ form.website.value }}">
-    </div>
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="{{ form.username.id_for_label }}">ユーザー名</label>
+          {{ form.username }}
+          {{ form.username.errors }}
+        </div>
 
-    <div class="form-group">
-      <label for="birth_date">誕生日</label>
-      <input type="date" id="birth_date" name="birth_date" value="{{ form.birth_date.value|date:'Y-m-d' }}">
-    </div>
+        <div class="form-group">
+          <label for="{{ form.display_name.id_for_label }}">表示名</label>
+          {{ form.display_name }}
+          {{ form.display_name.errors }}
+        </div>
+      </div>
 
-    <div class="form-actions">
-      <a href="{% url 'twitter_app:profile_detail' user.username %}">キャンセル</a>
-      <button type="submit">保存</button>
-    </div>
-  </form>
-</div>
+      <div class="form-group">
+        <label for="{{ form.introduce_content.id_for_label }}">自己紹介</label>
+        {{ form.introduce_content }}
+        {{ form.introduce_content.errors }}
+      </div>
+
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="{{ form.place.id_for_label }}">場所</label>
+          {{ form.place }}
+          {{ form.place.errors }}
+        </div>
+
+        <div class="form-group">
+          <label for="{{ form.birth_date.id_for_label }}">誕生日</label>
+          {{ form.birth_date }}
+          {{ form.birth_date.errors }}
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="{{ form.website.id_for_label }}">Webサイト</label>
+        {{ form.website }}
+        {{ form.website.errors }}
+      </div>
+
+      <div class="form-actions">
+        <a href="{% url 'twitter_app:profile_detail' user.username %}">キャンセル</a>
+        <button type="submit">保存</button>
+      </div>
+    </form>
+  </section>
+</main>
 {% endblock %}
+
+{% block javascripts %}
+{{ block.super }}
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const bindPreview = (inputId, previewId) => {
+      const input = document.getElementById(inputId);
+      const preview = document.getElementById(previewId);
+      if (!input || !preview) {
+        return;
+      }
+
+      input.addEventListener("change", () => {
+        const file = input.files && input.files[0];
+        if (!file) {
+          return;
+        }
+
+        const imageUrl = URL.createObjectURL(file);
+        if (preview.tagName === "IMG") {
+          preview.src = imageUrl;
+          return;
+        }
+
+        const image = document.createElement("img");
+        image.src = imageUrl;
+        image.alt = "選択した画像";
+        image.id = previewId;
+        preview.replaceWith(image);
+      });
+    };
+
+    bindPreview("id_header_image", "header-preview-image");
+    bindPreview("id_icon_image", "icon-preview-image");
+  });
+</script>
+{% endblock javascripts %}
