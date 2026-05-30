@@ -21,7 +21,7 @@
     {% if user.is_authenticated %}
     <li><button class="btn btn-primary mt-3 rounded-pill" style="background-color: #1d9bf0;">投稿する</button></li>
     <li>
-    <div class="user_information">
+    <a class="user_information" href="{% url 'twitter_app:profile_detail' user.username %}">
         <div class="user-icon">
             {% if user.profile.icon_image %}
                 <img src="{{ user.profile.icon_image.url }}" alt="プロフィール画像">
@@ -33,7 +33,7 @@
             <p class='top_name'>{{ user.display_name}}</p>
             <p>@{{ user.username }}</p>
         </div>
-        </div>
+        </a>
         </li>
     {% else %}
     <li><a class="btn btn-primary mt-3 rounded-pill" href="{% url 'account_signup' %}">アカウント作成</a></li>
