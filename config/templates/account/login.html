@@ -6,35 +6,62 @@
 {% endblock extra_head %}
 {% load allauth account %}
 {% block head_title %}
-    {% trans "Sign In" %}
+    ログイン
 {% endblock head_title %}
 {% block content %}
-<div class="signup-page">
-    <div class="signup-container">
-    {% element h1 %}
-        {% trans "Sign In" %}
-    {% endelement %}
+<div class="auth-page">
+    <div class="auth-panel">
+        <a href="{% url 'twitter_app:top' %}" class="auth-brand" aria-label="トップへ戻る">
+            <i class="bi bi-leaf"></i>
+            <span>Calm SNS</span>
+        </a>
+        <div class="auth-copy">
+            <p class="auth-guide">
+                    <span class="auth-guide-main">おかえり♫</span>
+            </p>
+            {% element h1 %}
+                ログイン
+            {% endelement %}
+        </div>
     {% if not SOCIALACCOUNT_ONLY %}
         {% setvar link %}
-            <a href="{{ signup_url }}">
+            <a href="{{ signup_url }}" class="auth-inline-link">
             {% endsetvar %}
-            {% setvar end_link %}
+        {% setvar end_link %}
             </a>
         {% endsetvar %}
-        {% element p %}
-            {% blocktranslate %}If you have not created an account yet, then please {{ link }}sign up{{ end_link }} first.{% endblocktranslate %}
-        {% endelement %}
+        <p class="auth-switch">
+            {% blocktranslate %}はじめての方は {{ link }}アカウント作成{{ end_link }} へ{% endblocktranslate %}
+        </p>
         {% url 'account_login' as login_url %}
         {% element form form=form method="post" action=login_url tags="entrance,login" %}
             {% slot body %}
                 {% csrf_token %}
-                {% element fields form=form unlabeled=True %}
-                {% endelement %}
+                {{ form.non_field_errors }}
+                <p>
+                    <label for="{{ form.login.id_for_label }}">ユーザー名またはメールアドレス</label>
+                    {{ form.login }}
+                    {{ form.login.errors }}
+                </p>
+                <p>
+                    <label for="{{ form.password.id_for_label }}">パスワード</label>
+                    {{ form.password }}
+                    {{ form.password.errors }}
+                    {% if form.password.help_text %}
+                        <span class="helptext">{{ form.password.help_text }}</span>
+                    {% endif %}
+                </p>
+                {% if form.remember %}
+                    <p class="auth-checkbox-field">
+                        {{ form.remember }}
+                        <label for="{{ form.remember.id_for_label }}">ログインしたままにする</label>
+                    </p>
+                {% endif %}
                 {{ redirect_field }}
             {% endslot %}
             {% slot actions %}
                 {% element button type="submit" tags="prominent,login" %}
-                    {% trans "Sign In" %}
+                    ログイン
                 {% endelement %}
             {% endslot %}   
         {% endelement %}
@@ -53,14 +80,13 @@
                     {% trans "Send me a sign-in code" %}
                 {% endelement %}
             {% endif %}
-    </div>
-</div>
         {% endelement %}
     {% endif %}
     {% if SOCIALACCOUNT_ENABLED %}
         {% include "socialaccount/snippets/login.html" with page_layout="entrance" %}
     {% endif %} 
-    
+    </div>
+</div>
 {% endblock content %}
 {% block extra_body %}
     {{ block.super }}

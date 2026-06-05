@@ -1,0 +1,21 @@
+{% load socialaccount %}
+
+{% get_providers as socialaccount_providers %}
+{% if socialaccount_providers %}
+  <div class="auth-social">
+    <div class="auth-divider"><span>または</span></div>
+    <div class="auth-social-list">
+      {% for provider in socialaccount_providers %}
+        {% provider_login_url provider process="login" as href %}
+        <a href="{{ href }}" class="auth-social-button">
+          {% if provider.id == "github" %}
+            <i class="bi bi-github"></i>
+          {% else %}
+            <i class="bi bi-box-arrow-in-right"></i>
+          {% endif %}
+          {{ provider.name }}で続ける
+        </a>
+      {% endfor %}
+    </div>
+  </div>
+{% endif %}
