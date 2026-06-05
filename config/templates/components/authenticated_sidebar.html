@@ -3,7 +3,7 @@
   <ul class="nav nav-pills flex-column mb-auto">
     <li><a class="item" href="{% url 'twitter_app:top' %}"><i class="bi bi-house-heart"></i>　ホーム</a></li>
     <li>
-        <a class="item desktop-nav-item" href="#"><i class="bi bi-hash"></i>　話題を検索</a>
+        <a class="item desktop-nav-item" href="{% url 'twitter_app:search' %}"><i class="bi bi-search"></i>　検索</a>
         {% if user.is_authenticated %}
         <a class="item mobile-nav-item" href="{% url 'twitter_app:bookmark_list' %}"><i class="bi bi-bookmark"></i>　ブックマーク</a>
         {% endif %}
@@ -21,7 +21,7 @@
     {% if user.is_authenticated %}
     <li><button class="btn btn-primary mt-3 rounded-pill" style="background-color: #1d9bf0;">投稿する</button></li>
     <li>
-    <div class="user_information">
+    <a class="user_information" href="{% url 'twitter_app:profile_detail' user.username %}">
         <div class="user-icon">
             {% if user.profile.icon_image %}
                 <img src="{{ user.profile.icon_image.url }}" alt="プロフィール画像">
@@ -33,7 +33,7 @@
             <p class='top_name'>{{ user.display_name}}</p>
             <p>@{{ user.username }}</p>
         </div>
-        </div>
+        </a>
         </li>
     {% else %}
     <li><a class="btn btn-primary mt-3 rounded-pill" href="{% url 'account_signup' %}">アカウント作成</a></li>

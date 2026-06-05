@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% load i18n static %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'css/setting_user.css' %}">
+{% endblock extra_head %}
+
+{% block head_title %}
+GitHubでログイン
+{% endblock head_title %}
+
+{% block content %}
+<div class="auth-page">
+  <div class="auth-panel auth-provider-panel">
+    <a href="{% url 'twitter_app:top' %}" class="auth-brand" aria-label="トップへ戻る">
+      <i class="bi bi-leaf"></i>
+      <span>Calm SNS</span>
+    </a>
+
+    <div class="auth-copy">
+      <h1>GitHubでログイン</h1>
+    </div>
+
+    <form method="post">
+      {% csrf_token %}
+      <button type="submit" class="auth-provider-button">
+        <i class="bi bi-github"></i>
+        GitHubで続ける
+      </button>
+    </form>
+
+    <p class="auth-secondary-action">
+      <a href="{% url 'account_login' %}">別の方法でログイン</a>
+    </p>
+  </div>
+</div>
+{% endblock content %}

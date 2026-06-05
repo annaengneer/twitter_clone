@@ -62,8 +62,8 @@ class CommentForm(forms.ModelForm):
         }
 
 class ProfileForm(forms.ModelForm):
-    username = forms.CharField(label='ユーザー名', required=True)
-    display_name = forms.CharField(label='表示名', required=False)
+    username = forms.CharField(label='ユーザー名', required=True, widget=forms.TextInput(attrs={'class': 'form__input'}))
+    display_name = forms.CharField(label='表示名', required=False, widget=forms.TextInput(attrs={'class': 'form__input'}))
 
     class Meta:
         model = Profile
@@ -78,15 +78,19 @@ class ProfileForm(forms.ModelForm):
             'birth_date',
         ]
         widgets = {
-            'introduce_content': forms.Textarea(attrs={'class': 'form__input'}),
+            'icon_image': forms.FileInput(attrs={'accept': 'image/*'}),
+            'header_image': forms.FileInput(attrs={'accept': 'image/*'}),
+            'introduce_content': forms.Textarea(attrs={'class': 'form__input', 'rows': 4}),
             'place': forms.TextInput(attrs={'class': 'form__input'}),
             'website': forms.URLInput(attrs={'class': 'form__input'}),
-            'birth_date': forms.DateInput(attrs={'class': 'form__input', 'type': 'date'}),
+            'birth_date': forms.DateInput(format='%Y-%m-%d', attrs={'class': 'form__input', 'type': 'date'}),
         }
 
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user', None)
         super().__init__(*args, **kwargs)
+        for field_name in ['display_name', 'icon_image', 'header_image', 'introduce_content', 'place', 'website', 'birth_date']:
+            self.fields[field_name].required = False
         if user:
             self.fields['username'].initial = user.username
             if hasattr(user, 'display_name'):

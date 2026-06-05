@@ -5,35 +5,84 @@
 <link rel="stylesheet" href="{% static 'css/setting_user.css' %}">
 {% endblock extra_head %}
 {% block head_title %}
-    {% trans "Signup" %}
+    新規登録
 {% endblock head_title %}
 {% block content %}
-<div class="signup-page">
-    <div class="signup-container">
-    {% element h1 %}
-        {% trans "Sign Up" %}
-    {% endelement %}
+<div class="auth-page">
+    <div class="auth-panel">
+    <a href="{% url 'twitter_app:top' %}" class="auth-brand" aria-label="トップへ戻る">
+        <i class="bi bi-leaf"></i>
+        <span>Calm SNS</span>
+    </a>
+        <div class="auth-copy">
+            <p class="auth-guide">
+                <span class="auth-guide-main">Calm SNSへようこそ♫</span>
+            </p>
+            {% element h1 %}
+                アカウント作成
+            {% endelement %}
+        </div>
     {% setvar link %}
-        <a href="{{ login_url }}">
+        <a href="{{ login_url }}" class="auth-inline-link">
         {% endsetvar %}
         {% setvar end_link %}
         </a>
     {% endsetvar %}
-    {% element p %}
-        {% blocktranslate %}Already have an account? Then please {{ link }}sign in{{ end_link }}.{% endblocktranslate %}
-    {% endelement %}
+    <p class="auth-switch">
+        {% blocktranslate %}すでにアカウントがある場合は {{ link }}ログイン{{ end_link }} できます{% endblocktranslate %}
+    </p>
     {% if not SOCIALACCOUNT_ONLY %}
         {% url 'account_signup' as action_url %}
         {% element form form=form method="post" action=action_url tags="entrance,signup" %}
             {% slot body %}
                 {% csrf_token %}
-                {% element fields form=form unlabeled=True %}
-                {% endelement %}
+                {{ form.non_field_errors }}
+                <div class="auth-field">
+                    <label for="{{ form.email.id_for_label }}">メールアドレス</label>
+                    {{ form.email }}
+                    {{ form.email.errors }}
+                </div>
+                <div class="auth-field">
+                    <label for="{{ form.username.id_for_label }}">ユーザー名</label>
+                    {{ form.username }}
+                    {{ form.username.errors }}
+                </div>
+                <div class="auth-field">
+                    <label for="{{ form.password1.id_for_label }}">パスワード</label>
+                    {{ form.password1 }}
+                    {{ form.password1.errors }}
+                    <ul class="auth-password-rules" id="id_password1_helptext">
+                        <li>あなたの他の個人情報と似ているパスワードにはできません</li>
+                        <li>パスワードは最低 8 文字以上必要です</li>
+                        <li>よく使われるパスワードにはできません</li>
+                        <li>数字だけのパスワードにはできません</li>
+                    </ul>
+                </div>
+                <div class="auth-field">
+                    <label for="{{ form.password2.id_for_label }}">パスワード確認</label>
+                    {{ form.password2 }}
+                    {{ form.password2.errors }}
+                </div>
+                <div class="auth-field">
+                    <label for="{{ form.display_name.id_for_label }}">表示名</label>
+                    {{ form.display_name }}
+                    {{ form.display_name.errors }}
+                </div>
+                <div class="auth-field">
+                    <label for="{{ form.phone_number.id_for_label }}">電話番号 <span class="auth-label-note">任意</span></label>
+                    {{ form.phone_number }}
+                    {{ form.phone_number.errors }}
+                </div>
+                <div class="auth-field">
+                    <label for="{{ form.birth_date.id_for_label }}">生年月日 <span class="auth-label-note">任意</span></label>
+                    {{ form.birth_date }}
+                    {{ form.birth_date.errors }}
+                </div>
                 {{ redirect_field }}
             {% endslot %}
             {% slot actions %}
                 {% element button tags="prominent,signup" type="submit" %}
-                    {% trans "Sign Up" %}
+                    アカウントを作成
                 {% endelement %}
             {% endslot %}
         {% endelement %}

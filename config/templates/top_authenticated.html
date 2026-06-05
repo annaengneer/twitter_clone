@@ -26,6 +26,17 @@
       </div>
 
       <div class="fixed-content">
+       <form action="{% url 'twitter_app:search' %}" method="GET" class="top-search-form">
+        <i class="bi bi-search"></i>
+        <input
+          type="search"
+          name="q"
+          placeholder="投稿やユーザーを検索"
+          autocomplete="off"
+        >
+        <button type="submit">検索</button>
+       </form>
+
        <form method="POST" enctype="multipart/form-data">
         {% csrf_token %}
         <div class="form-with-icon">
@@ -50,11 +61,13 @@
                 <i class="bi bi-emoji-smile"></i>
                 <i class="bi bi-calendar2-check"></i>
                 <i class="bi bi-geo-alt"></i>
-                <a href="{% url 'twitter_app:calm_character' %}?from=compose" class="calm-compose-link" id="calm-compose-link">
-                  <i class="bi bi-leaf"></i>
-                  Calmで整える
-                </a>
                 <span class="selected-image-status" id="selected-image-status"></span>
+              </div>
+              <div class="compose-image-preview" id="compose-image-preview" hidden>
+                <img src="" alt="選択した画像のプレビュー" id="compose-image-preview-img">
+                <button type="button" id="clear-compose-image" aria-label="選択した画像を取り消す">
+                  <i class="bi bi-x"></i>
+                </button>
               </div>
               <input type="submit" value="投稿する" class="btn btn-primary mt-2 rounded-pill"/>
               </div>
@@ -89,33 +102,48 @@
   document.addEventListener("DOMContentLoaded", () => {
     const imageInput = document.getElementById("id_image");
     const selectedImageStatus = document.getElementById("selected-image-status");
-    const contentInput = document.getElementById("id_content");
-    const calmComposeLink = document.getElementById("calm-compose-link");
-    const postForm = contentInput ? contentInput.closest("form") : null;
-    const draftKey = "calmPostDraft";
+    const preview = document.getElementById("compose-image-preview");
+    const previewImage = document.getElementById("compose-image-preview-img");
+    const clearImageButton = document.getElementById("clear-compose-image");
 
-    if (!imageInput || !selectedImageStatus || !contentInput || !calmComposeLink || !postForm) {
+    if (!imageInput || !selectedImageStatus || !preview || !previewImage || !clearImageButton) {
       return;
     }
 
-    const savedDraft = localStorage.getItem(draftKey);
-
-    if (savedDraft && !contentInput.value.trim()) {
-      contentInput.value = savedDraft;
-    }
+    let previewUrl = null;
 
     imageInput.addEventListener("change", () => {
       const file = imageInput.files && imageInput.files[0];
       selectedImageStatus.textContent = file ? "添付済み" : "";
+
+      if (previewUrl) {
+        URL.revokeObjectURL(previewUrl);
+        previewUrl = null;
+      }
+
+      if (!file) {
+        preview.hidden = true;
+        previewImage.src = "";
+        return;
+      }
+
+      previewUrl = URL.createObjectURL(file);
+      previewImage.src = previewUrl;
+      preview.hidden = false;
     });
 
-    calmComposeLink.addEventListener("click", () => {
-      localStorage.setItem(draftKey, contentInput.value);
+    clearImageButton.addEventListener("click", () => {
+      imageInput.value = "";
+      selectedImageStatus.textContent = "";
+      preview.hidden = true;
+      previewImage.src = "";
+
+      if (previewUrl) {
+        URL.revokeObjectURL(previewUrl);
+        previewUrl = null;
+      }
     });
 
-    postForm.addEventListener("submit", () => {
-      localStorage.removeItem(draftKey);
-    });
   });
 </script>
 {% endblock javascripts %}
