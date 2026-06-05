@@ -56,6 +56,15 @@ MyPage {% else %} Main {% endif %} {% endblock %} {% block page_content %}
       <span><strong>{{ profile.following_count }}</strong> フォロー中</span>
       <span><strong>{{ profile.follower_count }}</strong> フォロワー</span>
     </div>
+    {% if user.is_authenticated and request.user == profile.user %}
+      <div class="profile-calm" id="profile-calm" hidden>
+        <img src="" alt="" id="profile-calm-image">
+        <div>
+          <span>Calm character</span>
+          <strong id="profile-calm-name"></strong>
+        </div>
+      </div>
+    {% endif %}
   </div>
 </div>
 <div class="cp_tab">
@@ -112,3 +121,25 @@ MyPage {% else %} Main {% endif %} {% endblock %} {% block page_content %}
 </div>
 
 {% endblock page_content %}
+
+{% block javascripts %}
+{{ block.super }}
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const calmBox = document.getElementById("profile-calm");
+    const calmImage = document.getElementById("profile-calm-image");
+    const calmName = document.getElementById("profile-calm-name");
+    const characterName = localStorage.getItem("calmFavoriteCharacterName");
+    const characterImage = localStorage.getItem("calmFavoriteCharacterImage");
+
+    if (!calmBox || !calmImage || !calmName || !characterName || !characterImage) {
+      return;
+    }
+
+    calmImage.src = characterImage;
+    calmImage.alt = characterName;
+    calmName.textContent = characterName;
+    calmBox.hidden = false;
+  });
+</script>
+{% endblock javascripts %}

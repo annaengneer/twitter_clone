@@ -239,6 +239,30 @@
     display: none;
   }
 
+  .calm-compose-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 10px;
+    border-radius: 999px;
+    color: var(--color-accent);
+    background-color: var(--color-surface-soft);
+    font-size: 0.86rem;
+    font-weight: 700;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+
+  .calm-compose-link i {
+    color: var(--color-accent);
+    font-size: 1rem;
+  }
+
+  .calm-compose-link:hover {
+    color: var(--color-text);
+    background-color: var(--color-border);
+  }
+
   .post-card {
     position: relative;
   }

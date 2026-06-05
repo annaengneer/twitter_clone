@@ -16,52 +16,110 @@
 {% endblock %}
 
 {% block page_content %}
-<section class="calm-page">
-  <div class="calm-hero">
-    <div class="calm-character" aria-hidden="true">
-      <div class="calm-character-face">
-        <span class="eye left"></span>
-        <span class="eye right"></span>
-        <span class="mouth"></span>
-      </div>
-      <i class="bi bi-leaf"></i>
+<section class="calm-page" id="calm-page" data-theme="{{ calm_characters.0.theme }}">
+  <div class="calm-toast" id="calm-toast" aria-live="polite"></div>
+
+  <div class="calm-hero" id="calm-hero">
+    <div class="calm-character" aria-live="polite">
+      {% with default_character=calm_characters.0 %}
+      <img
+        id="calm-character-image"
+        src="{% static default_character.image %}"
+        alt="{{ default_character.name }}"
+      >
+      {% endwith %}
     </div>
 
     <div class="calm-message">
       <p class="calm-label">Calm character</p>
-      <h1>少しだけ、ひと息つきましょう。</h1>
-      <p>
-        投稿する前や、気持ちが揺れたときに立ち止まれる場所です。
-        まずは深呼吸して、今の気持ちをゆっくり整えましょう。
-      </p>
+      <h1 id="calm-character-heading">{{ calm_characters.0.hero_title }}</h1>
+      <p id="calm-character-description">{{ calm_characters.0.hero_description }}</p>
     </div>
+  </div>
+
+  <div class="calm-character-select" aria-labelledby="calm-character-select-title">
+    <p id="calm-character-select-title">一緒に過ごすキャラクター</p>
+    <div class="calm-character-list">
+      {% for character in calm_characters %}
+      <button
+        type="button"
+        class="calm-character-option"
+        data-character-id="{{ character.id }}"
+        data-character-name="{{ character.name }}"
+        data-character-image="{% static character.image %}"
+        data-character-message="{{ character.message }}"
+        data-character-hero-title="{{ character.hero_title }}"
+        data-character-hero-description="{{ character.hero_description }}"
+        data-character-theme="{{ character.theme }}"
+        data-daily-message="{{ character.daily_message }}"
+        data-fortune-title="{{ character.fortune_title }}"
+        data-lucky-item="{{ character.lucky_item }}"
+        data-tiny-joy="{{ character.tiny_joy }}"
+        data-lucky-items='{{ character.lucky_items|join:"|" }}'
+        data-tiny-joys='{{ character.tiny_joys|join:"|" }}'
+        data-response-tired="{{ character.responses.tired }}"
+        data-response-anxious="{{ character.responses.anxious }}"
+        data-response-foggy="{{ character.responses.foggy }}"
+        data-response-sleepy="{{ character.responses.sleepy }}"
+        data-response-worked="{{ character.responses.worked }}"
+        data-response-before-post="{{ character.responses.beforePost }}"
+        data-response-talk="{{ character.responses.talk }}"
+        data-response-refresh="{{ character.responses.refresh }}"
+        data-response-good="{{ character.responses.good }}"
+        aria-pressed="{% if forloop.first %}true{% else %}false{% endif %}"
+      >
+        <img src="{% static character.image %}" alt="">
+        <span>{{ character.name }}</span>
+      </button>
+      {% endfor %}
+    </div>
+    <p class="calm-character-note" id="calm-character-note">{{ calm_characters.0.message }}</p>
   </div>
 
   <div class="calm-suggestions">
     <p>今日の一言</p>
-    <blockquote>{{ daily_message }}</blockquote>
+    <blockquote id="calm-daily-message">{{ calm_characters.0.daily_message }}</blockquote>
   </div>
 
-  <div class="calm-talk">
-    <p>今の気持ちに近いものを選んでください</p>
-    <div class="calm-options" id="calm-options">
-      <button type="button" data-message="今日もお疲れさまでした。ちゃんと向き合った時間は、見えなくても自分の中に残っています。明日は今日より少しだけ軽く進めます。">
-        今日ちょっと疲れた
-      </button>
-      <button type="button" data-message="頑張れた日ですね。全部が完璧じゃなくても、前に進もうとしたことは十分大切です。明日もその調子で、少しずついきましょう。">
-        今日頑張れた
-      </button>
-      <button type="button" data-message="投稿する前に一度立ち止まれたのは、とても良い選択です。言葉を少し整えるだけで、自分にも相手にもやさしくできます。">
-        投稿前に落ち着きたい
-      </button>
-      <button type="button" data-message="気分を切り替えたい時は、まず深呼吸をひとつ。今の気持ちを置いて、次の自分に少し余白を作りましょう。">
-        気分を切り替えたい
+  <div class="calm-fortune" aria-labelledby="calm-fortune-title">
+    <div class="calm-section-title">
+      <p id="calm-fortune-title">今日のおすすめアクション</p>
+      <button type="button" id="calm-fortune-refresh">
+        <i class="bi bi-stars"></i>
+        別の提案を見る
       </button>
     </div>
+    <div class="calm-fortune-grid">
+      <div class="calm-fortune-card">
+        <span>今日はどんな日</span>
+        <strong id="calm-fortune-flow">{{ calm_characters.0.fortune_title }}</strong>
+      </div>
+      <div class="calm-fortune-card">
+        <span>お守りアイテム</span>
+        <strong id="calm-lucky-item">{{ calm_characters.0.lucky_item }}</strong>
+      </div>
+      <div class="calm-fortune-card">
+        <span>すぐできること</span>
+        <strong id="calm-tiny-joy">{{ calm_characters.0.tiny_joy }}</strong>
+      </div>
+    </div>
+  </div>
+
+  <div class="calm-talk" id="calm-checkin">
+    <p>今の気分を選ぶ</p>
+    <div class="calm-options" id="calm-options">
+      {% for mood in mood_options %}
+      <button type="button" data-mood="{{ mood.id }}" data-mood-label="{{ mood.label }}">
+        {{ mood.label }}
+      </button>
+      {% endfor %}
+    </div>
     <p class="calm-selected" id="calm-selected" hidden></p>
-    <p class="calm-response" id="calm-response">選ぶと、Calmから一言が表示されます。</p>
+    <p class="calm-response" id="calm-response">{{ calm_characters.0.name }}からメッセージが届くよ</p>
     <button type="button" class="calm-reset" id="calm-reset" hidden>もう一度選ぶ</button>
   </div>
+
+  <a href="{% url 'twitter_app:top' %}" class="calm-return-link" id="calm-return-link" hidden>投稿に戻る</a>
 </section>
 {% endblock %}
 
@@ -74,16 +132,141 @@
     const options = document.getElementById("calm-options");
     const reset = document.getElementById("calm-reset");
     const buttons = document.querySelectorAll(".calm-talk button");
+    const characterImage = document.getElementById("calm-character-image");
+    const characterHeading = document.getElementById("calm-character-heading");
+    const characterDescription = document.getElementById("calm-character-description");
+    const characterNote = document.getElementById("calm-character-note");
+    const dailyMessage = document.getElementById("calm-daily-message");
+    const calmPage = document.getElementById("calm-page");
+    const toast = document.getElementById("calm-toast");
+    const fortuneFlow = document.getElementById("calm-fortune-flow");
+    const luckyItem = document.getElementById("calm-lucky-item");
+    const tinyJoy = document.getElementById("calm-tiny-joy");
+    const fortuneRefresh = document.getElementById("calm-fortune-refresh");
+    const returnLink = document.getElementById("calm-return-link");
+    const characterButtons = document.querySelectorAll(".calm-character-option");
+    const storageKey = "calmCharacterId";
+    let selectedCharacterButton = null;
+    let selectedMood = null;
 
-    if (!response || !selected || !options || !reset || !buttons.length) {
+    if (
+      !response ||
+      !selected ||
+      !options ||
+      !reset ||
+      !buttons.length ||
+      !characterImage ||
+      !characterHeading ||
+      !characterDescription ||
+      !characterNote ||
+      !dailyMessage ||
+      !calmPage ||
+      !toast ||
+      !fortuneFlow ||
+      !luckyItem ||
+      !tinyJoy ||
+      !fortuneRefresh ||
+      !returnLink ||
+      !characterButtons.length
+    ) {
       return;
     }
 
+    const getWaitingMessage = (button) => {
+      return `${button.dataset.characterName}からメッセージが届くよ`;
+    };
+
+    const getCharacterResponse = (button, mood) => {
+      const responseMap = {
+        tired: button.dataset.responseTired,
+        anxious: button.dataset.responseAnxious,
+        foggy: button.dataset.responseFoggy,
+        sleepy: button.dataset.responseSleepy,
+        worked: button.dataset.responseWorked,
+        beforePost: button.dataset.responseBeforePost,
+        talk: button.dataset.responseTalk,
+        refresh: button.dataset.responseRefresh,
+        good: button.dataset.responseGood,
+      };
+
+      return responseMap[mood] || getWaitingMessage(button);
+    };
+
+    const chooseFrom = (text) => {
+      const items = text.split("|").filter(Boolean);
+      return items[Math.floor(Math.random() * items.length)] || "";
+    };
+
+    const showToast = (message) => {
+      toast.textContent = message;
+      toast.classList.add("is-visible");
+      window.setTimeout(() => {
+        toast.classList.remove("is-visible");
+      }, 3200);
+    };
+
+    const selectCharacter = (button, shouldSave = true) => {
+      selectedCharacterButton = button;
+      calmPage.dataset.theme = button.dataset.characterTheme;
+      characterImage.src = button.dataset.characterImage;
+      characterImage.alt = button.dataset.characterName;
+      characterHeading.textContent = button.dataset.characterHeroTitle;
+      characterDescription.textContent = button.dataset.characterHeroDescription;
+      characterNote.textContent = button.dataset.characterMessage;
+      dailyMessage.textContent = button.dataset.dailyMessage;
+      fortuneFlow.textContent = button.dataset.fortuneTitle;
+      luckyItem.textContent = button.dataset.luckyItem;
+      tinyJoy.textContent = button.dataset.tinyJoy;
+      localStorage.setItem("calmFavoriteCharacterName", button.dataset.characterName);
+      localStorage.setItem("calmFavoriteCharacterImage", button.dataset.characterImage);
+
+      if (selectedMood) {
+        response.textContent = getCharacterResponse(button, selectedMood);
+      } else {
+        response.textContent = getWaitingMessage(button);
+      }
+
+      characterButtons.forEach((characterButton) => {
+        characterButton.setAttribute("aria-pressed", String(characterButton === button));
+      });
+
+      if (shouldSave) {
+        localStorage.setItem(storageKey, button.dataset.characterId);
+        showToast(`${button.dataset.characterName}にしたよ`);
+        calmPage.classList.remove("is-sparkling", "is-floating", "is-hearting");
+        window.requestAnimationFrame(() => {
+          calmPage.classList.add("is-floating");
+        });
+      }
+    };
+
+    const savedCharacterId = localStorage.getItem(storageKey);
+    const savedCharacterButton = savedCharacterId
+      ? document.querySelector(`.calm-character-option[data-character-id="${savedCharacterId}"]`)
+      : null;
+
+    if (savedCharacterButton) {
+      selectCharacter(savedCharacterButton, false);
+    } else {
+      selectCharacter(characterButtons[0], false);
+    }
+
+    characterButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        selectCharacter(button);
+      });
+    });
+
     buttons.forEach((button) => {
       button.addEventListener("click", () => {
-        selected.textContent = button.textContent.trim();
+        selectedMood = button.dataset.mood;
+        selected.textContent = button.dataset.moodLabel;
         selected.hidden = false;
-        response.textContent = button.dataset.message;
+        response.textContent = getCharacterResponse(selectedCharacterButton, selectedMood);
+        calmPage.classList.remove("is-sparkling", "is-floating", "is-hearting");
+        window.requestAnimationFrame(() => {
+          calmPage.classList.add(selectedMood === "good" || selectedMood === "worked" ? "is-sparkling" : "is-hearting");
+        });
         options.hidden = true;
         reset.hidden = false;
       });
@@ -92,10 +275,27 @@
     reset.addEventListener("click", () => {
       selected.textContent = "";
       selected.hidden = true;
-      response.textContent = "選ぶと、Calmから一言が表示されます。";
+      selectedMood = null;
+      response.textContent = getWaitingMessage(selectedCharacterButton);
       options.hidden = false;
       reset.hidden = true;
     });
+
+    fortuneRefresh.addEventListener("click", () => {
+      luckyItem.textContent = chooseFrom(selectedCharacterButton.dataset.luckyItems);
+      tinyJoy.textContent = chooseFrom(selectedCharacterButton.dataset.tinyJoys);
+      calmPage.classList.remove("is-sparkling", "is-floating", "is-hearting");
+      window.requestAnimationFrame(() => {
+        calmPage.classList.add("is-sparkling");
+      });
+      showToast("別の提案を出したよ");
+    });
+
+    if (new URLSearchParams(window.location.search).get("from") === "compose") {
+      returnLink.hidden = false;
+    }
+
+    showToast(`${selectedCharacterButton.dataset.characterName}から今日の一言が届いてるよ`);
   });
 </script>
 {% endblock javascripts %}
